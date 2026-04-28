@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Panimii Bakery — Repostería artesanal especializada en roles y galletas. Horneado con paciencia.{% endblock %}">
+    <title>{% block title %}Panimii Bakery{% endblock %}</title>
+
+    <!-- ── Google Fonts: Playfair Display (Serif) + Inter (Sans-serif) ── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- ── Tailwind CSS (CDN — desarrollo) ── -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    /* ── DESIGN.md › colors ── */
+                    colors: {
+                        primary:   '#000000',  /* Negro puro — títulos, logo, botones */
+                        secondary: '#4A4A4A',  /* Gris oscuro — subtítulos           */
+                        neutral:   '#F9F9F9',  /* Gris extra claro — fondos alternos */
+                        surface:   '#FFFFFF',  /* Blanco puro — fondo principal      */
+                    },
+                    /* ── DESIGN.md › typography ── */
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans:  ['"Inter"', 'system-ui', 'sans-serif'],
+                    },
+                    fontSize: {
+                        'display': ['48px', { lineHeight: '1.15', fontWeight: '700' }],
+                        'body':    ['16px', { lineHeight: '1.6' }],
+                    },
+                    /* ── DESIGN.md › rounded ── */
+                    borderRadius: {
+                        'editorial-none': '0px',  /* Bordes rectos — minimalismo puro  */
+                        'editorial-sm':   '4px',  /* Curvatura mínima — botones/cards  */
+                    },
+                    /* ── DESIGN.md › spacing ── */
+                    spacing: {
+                        'section':   '80px',  /* Padding vertical entre secciones */
+                        'container': '24px',  /* Padding lateral de contenedores  */
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- ── Estilos base editoriales ── -->
+    <style type="text/tailwindcss">
+        /* Reset global a la tipografía del DESIGN.md */
+        body {
+            @apply font-sans text-body text-secondary bg-surface antialiased;
+        }
+
+        /* Títulos principales: Serif editorial */
+        h1, h2, h3 {
+            @apply font-serif text-primary;
+        }
+
+        /* Secciones alternas: surface ↔ neutral */
+        .section-surface {
+            @apply bg-surface py-section;
+        }
+        .section-neutral {
+            @apply bg-neutral py-section;
+        }
+
+        /* Botón editorial: fondo negro, texto blanco, bordes rectos */
+        .btn-editorial {
+            @apply inline-block bg-primary text-white font-sans text-sm font-medium
+                   tracking-wider uppercase px-8 py-3 rounded-editorial-sm
+                   transition-opacity duration-300 hover:opacity-80;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- ════════════════════════════════════════════════════════════════
+         NAVBAR — Minimalista editorial
+         Font: Inter (body_font) · Color: primary (#000000)
+         ════════════════════════════════════════════════════════════ -->
+    <header class="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b border-neutral">
+        <nav class="max-w-7xl mx-auto flex items-center justify-between px-container py-5">
+            <!-- Logo -->
+            <a href="{% url 'admin:index' %}" class="font-serif text-2xl font-bold tracking-widest text-primary">
+                PANIIMI
+            </a>
+
+            <!-- Menú hamburguesa (móvil) -->
+            <button
+                id="nav-toggle"
+                class="md:hidden flex flex-col gap-[5px] p-2"
+                aria-label="Abrir menú"
+                aria-expanded="false"
+            >
+                <span class="block w-6 h-[2px] bg-primary transition-transform duration-300" id="bar-1"></span>
+                <span class="block w-6 h-[2px] bg-primary transition-opacity  duration-300" id="bar-2"></span>
+                <span class="block w-6 h-[2px] bg-primary transition-transform duration-300" id="bar-3"></span>
+            </button>
+
+            <!-- Enlaces de navegación -->
+            <ul
+                id="nav-menu"
+                class="hidden md:flex items-center gap-8 font-sans text-sm font-medium tracking-wide text-secondary
+                       max-md:absolute max-md:top-full max-md:left-0 max-md:w-full max-md:bg-surface
+                       max-md:flex-col max-md:items-center max-md:gap-0 max-md:border-b max-md:border-neutral
+                       max-md:shadow-sm"
+            >
+                <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Inicio</a></li>
+                <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Catálogo</a></li>
+                <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Nosotros</a></li>
+                <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Envíos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         CONTENIDO PRINCIPAL
+         Cada sección hija debe usar .section-surface o .section-neutral
+         para respetar el spacing.section (80px) y el patrón alterno.
+         ════════════════════════════════════════════════════════════ -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         FOOTER — Fondo primary (#000000), texto blanco
+         Estilo editorial: limpio, tipografía Inter
+         ════════════════════════════════════════════════════════════ -->
+    <footer class="bg-primary text-white">
+        <div class="max-w-7xl mx-auto px-container py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+                <!-- Columna 1: Marca -->
+                <div>
+                    <h3 class="font-serif text-xl font-bold tracking-widest text-white mb-4">PANIIMI</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        Repostería artesanal especializada en roles y galletas.
+                        Cada pieza horneada con paciencia y los mejores ingredientes.
+                    </p>
+                </div>
+
+                <!-- Columna 2: Navegación -->
+                <div>
+                    <h4 class="font-sans text-xs font-semibold tracking-widest uppercase text-white/40 mb-4">Navegación</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Inicio</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Catálogo</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Nosotros</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Envíos</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Contacto -->
+                <div>
+                    <h4 class="font-sans text-xs font-semibold tracking-widest uppercase text-white/40 mb-4">Contacto</h4>
+                    <ul class="space-y-2 text-sm text-white/70">
+                        <li>contacto@paniimi.com</li>
+                        <li>Monterrey, N.L., México</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Línea divisoria + Copyright -->
+            <div class="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-white/40 text-xs tracking-wide">
+                    &copy; {% now "Y" %} Panimii Bakery. Todos los derechos reservados.
+                </p>
+                <p class="text-white/30 text-xs">
+                    Horneado con paciencia
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ── Script: Menú móvil ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('nav-toggle');
+            const menu   = document.getElementById('nav-menu');
+            const bar1   = document.getElementById('bar-1');
+            const bar2   = document.getElementById('bar-2');
+            const bar3   = document.getElementById('bar-3');
+
+            toggle.addEventListener('click', () => {
+                const isOpen = menu.classList.toggle('hidden');
+                /* Si se muestra el menú, hidden se REMUEVE → isOpen es false */
+                if (!isOpen) {
+                    menu.classList.add('flex');
+                    bar1.style.transform = 'rotate(45deg) translate(5px, 5px)';
+                    bar2.style.opacity   = '0';
+                    bar3.style.transform = 'rotate(-45deg) translate(5px, -5px)';
+                    toggle.setAttribute('aria-expanded', 'true');
+                } else {
+                    menu.classList.remove('flex');
+                    bar1.style.transform = '';
+                    bar2.style.opacity   = '';
+                    bar3.style.transform = '';
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
