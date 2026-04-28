@@ -5,82 +5,139 @@
 
 {% block content %}
 
-<!-- ── HERO SECTION (Asimétrica Editorial) ── -->
+<!-- ═══════════════════════════════════════════════════════
+     SECCIÓN 1 — HERO
+     Layout: Asimétrico 5-col texto / 7-col imagen
+     Fondo:  surface (#FFFFFF) · Imagen: oso_acostado.webp
+     ═══════════════════════════════════════════════════ -->
 <section class="section-surface overflow-hidden">
     <div class="max-w-7xl mx-auto px-container">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            <!-- Bloque de Texto (Columnas 1-5) -->
-            <div class="lg:col-span-5 z-10">
-                <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/60 mb-4 block">
-                    Desde el Corazón del Ártico
-                </span>
-                <h1 class="text-display lg:text-6xl xl:text-7xl mb-8 leading-[1.1]">
-                    El Arte de <br> 
-                    <span class="italic font-normal">la Galleta</span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center">
+
+            <!-- Bloque de texto (cols 1–5) -->
+            <div class="lg:col-span-5 lg:pr-12">
+                <h1 class="font-serif text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-[1.08] mb-8">
+                    El Arte de la
+                    <span class="italic font-normal block">Galleta Perfecta</span>
                 </h1>
-                <p class="text-secondary text-lg mb-10 max-w-md leading-relaxed">
-                    Piezas de repostería artesanal horneadas con la paciencia de un oso polar.
-                    Descubre el equilibrio perfecto entre tradición y minimalismo.
+                <p class="font-sans text-base text-secondary leading-relaxed mb-10 max-w-sm">
+                    Artesanía pura en cada mordida. Descubre nuestra colección
+                    de galletas de autor, horneadas diariamente para elevar tu paladar.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#" class="btn-editorial text-center">Explorar Catálogo</a>
-                    <a href="#" class="font-sans text-sm font-bold border-b-2 border-primary py-2 self-start hover:text-secondary transition-colors">
-                        Nuestra Historia
-                    </a>
-                </div>
+                <a href="#" class="btn-editorial">Ver Catálogo</a>
             </div>
 
-            <!-- Bloque de Imagen Asimétrico (Columnas 6-12) -->
+            <!-- Bloque de imagen (cols 6–12) -->
             <div class="lg:col-span-7 relative">
-                <!-- Círculo decorativo sutil (Punto de calidez) -->
-                <div class="absolute -top-12 -right-12 w-64 h-64 bg-neutral rounded-full z-0 opacity-50"></div>
-                
-                <div class="relative z-10 group">
-                    <img 
-                        src="{% static 'img/hero_bear.png' %}" 
-                        alt="Oso polar panadero artesanal" 
-                        class="w-full h-auto object-cover rounded-editorial-none grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700"
-                    >
-                    <!-- Caption editorial flotante -->
-                    <div class="absolute bottom-6 -left-6 bg-surface p-4 shadow-xl hidden md:block border border-neutral">
-                        <p class="font-serif italic text-sm text-primary">"Horneado con paciencia, servido con amor."</p>
-                    </div>
+
+                <!-- Marco gris de fondo — detalle editorial -->
+                <div class="absolute inset-y-0 right-0 w-[90%] bg-neutral -z-10"></div>
+
+                <!-- Imagen principal -->
+                <img
+                    src="{% static 'img/oso_acostado.webp' %}"
+                    alt="Oso polar acostado sobre galletas artesanales"
+                    class="relative z-10 w-full h-auto object-contain"
+                >
+
+                <!-- Caption flotante — esquina inferior izquierda -->
+                <div class="absolute bottom-8 left-0 bg-surface border border-neutral p-4 shadow-md hidden md:block max-w-[180px]">
+                    <span class="font-serif italic text-xs text-primary leading-snug block">
+                        "Tan buenas que no querrás compartir."
+                    </span>
                 </div>
+
             </div>
 
         </div>
     </div>
 </section>
 
-<!-- Sección 2: neutral (#F9F9F9) — fondo alterno -->
+
+<!-- ═══════════════════════════════════════════════════════
+     SECCIÓN 2 — HORNEADO CON PACIENCIA
+     Layout: Imagen izq. (cols 1–4) / Texto der. (cols 6–12)
+     Fondo:  neutral (#F9F9F9) · Imagen: oso_envio.webp
+     ═══════════════════════════════════════════════════ -->
 <section class="section-neutral">
     <div class="max-w-7xl mx-auto px-container">
-        <h2 class="font-serif text-3xl font-bold mb-6">Horneado con Paciencia</h2>
-        <p class="max-w-2xl text-secondary leading-relaxed">
-            Nuestro proceso artesanal garantiza que cada galleta y cada rol tengan
-            el sabor y la textura perfectos. Sin prisas, sin atajos.
-        </p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+            <!-- Ilustración izquierda (cols 1–4) -->
+            <div class="lg:col-span-4 flex justify-center lg:justify-start">
+                <img
+                    src="{% static 'img/oso_envio.webp' %}"
+                    alt="Oso polar enviando un paquete de galletas"
+                    class="w-56 lg:w-full max-w-xs h-auto object-contain"
+                >
+            </div>
+
+            <!-- Texto derecha (cols 5–12) -->
+            <div class="lg:col-span-8 lg:pl-8">
+                <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-5 block">
+                    Nuestra Esencia
+                </span>
+                <h2 class="font-serif text-4xl lg:text-5xl font-bold text-primary leading-tight mb-6">
+                    Horneado con Paciencia
+                </h2>
+                <p class="font-sans text-base text-secondary leading-relaxed max-w-lg">
+                    En Paniimi no hacemos galletas rápidas. Seleccionamos el cacao más
+                    fino y dejamos que la masa repose para obtener esa textura perfecta:
+                    crujiente por fuera, suave por dentro.
+                </p>
+            </div>
+
+        </div>
     </div>
 </section>
 
-<!-- Sección 3: surface (#FFFFFF) — regresa al blanco -->
+
+<!-- ═══════════════════════════════════════════════════════
+     SECCIÓN 3 — NOSOTROS
+     Layout: Texto izq. (cols 1–6) / Imagen der. (cols 7–12)
+     Fondo:  surface (#FFFFFF) · Imagen: oso_comiendo_galleta.webp
+     ═══════════════════════════════════════════════════ -->
 <section class="section-surface">
     <div class="max-w-7xl mx-auto px-container">
-        <h2 class="font-serif text-3xl font-bold mb-6">Nuestras Categorías</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="border border-neutral p-8 rounded-editorial-sm">
-                <h3 class="text-lg font-bold mb-2">Galletas</h3>
-                <p class="text-secondary text-sm">Clásicas, decoradas y de temporada.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+            <!-- Texto izquierda (cols 1–6) -->
+            <div class="lg:col-span-6">
+                <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-5 block">
+                    Sobre Nosotros
+                </span>
+                <h2 class="font-serif text-4xl lg:text-5xl font-bold text-primary leading-tight mb-6">
+                    Un oso polar <br>
+                    <span class="italic font-normal">enamorado del azúcar</span>
+                </h2>
+                <p class="font-sans text-base text-secondary leading-relaxed mb-8 max-w-md">
+                    Paniimi nació de una obsesión simple: hornear la galleta perfecta.
+                    Cada receta es probada decenas de veces antes de llegar a tus manos.
+                    No creemos en los atajos, creemos en el sabor.
+                </p>
+                <a href="#"
+                   class="font-sans text-sm font-bold tracking-wide border-b-2 border-primary pb-1 hover:text-secondary transition-colors duration-200">
+                    Leer más →
+                </a>
             </div>
-            <div class="border border-neutral p-8 rounded-editorial-sm">
-                <h3 class="text-lg font-bold mb-2">Roles</h3>
-                <p class="text-secondary text-sm">Canela, nuez y especialidades.</p>
+
+            <!-- Imagen derecha (cols 7–12) -->
+            <div class="lg:col-span-6 relative flex justify-end">
+
+                <!-- Acento editorial vertical -->
+                <span class="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -rotate-90
+                             font-sans text-[10px] tracking-[0.4em] uppercase text-secondary/30
+                             origin-center whitespace-nowrap">
+                    Paniimi Bakery · Desde México
+                </span>
+
+                <img
+                    src="{% static 'img/oso_comiendo_galleta.webp' %}"
+                    alt="Oso polar disfrutando una galleta"
+                    class="w-full max-w-sm lg:max-w-full h-auto object-contain"
+                >
             </div>
-            <div class="border border-neutral p-8 rounded-editorial-sm">
-                <h3 class="text-lg font-bold mb-2">Temporada</h3>
-                <p class="text-secondary text-sm">Ediciones limitadas y festivas.</p>
-            </div>
+
         </div>
     </div>
 </section>
