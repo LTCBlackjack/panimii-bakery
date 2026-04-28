@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Catálogo — Panimii Bakery{% endblock %}
+{% block meta_description %}Explora nuestra colección de galletas artesanales y roles de canela. Horneado con paciencia en Paniimi Bakery.{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════
+     CABECERA DEL CATÁLOGO
+     Fondo: surface (#FFFFFF) · Tipografía: Playfair Display
+     ═══════════════════════════════════════════════════ -->
+<section class="bg-surface pt-section pb-12">
+    <div class="max-w-7xl mx-auto px-container">
+
+        <!-- Título editorial -->
+        <div class="mb-10">
+            <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
+                Nuestra Colección
+            </span>
+            <h1 class="font-serif text-5xl lg:text-6xl font-bold text-primary leading-tight">
+                {% if categoria_activa %}
+                    {{ categoria_activa.nombre }}
+                {% else %}
+                    Todo el Catálogo
+                {% endif %}
+            </h1>
+        </div>
+
+        <!-- Filtros por categoría — Tabs editoriales -->
+        <div class="flex flex-wrap items-center gap-3 border-b border-neutral pb-8">
+
+            <!-- Tab "Todos" -->
+            <a href="{% url 'catalogo:lista' %}"
+               class="font-sans text-sm font-medium tracking-wide px-5 py-2 border transition-colors duration-200
+                      {% if not categoria_activa %}
+                          bg-primary text-white border-primary
+                      {% else %}
+                          bg-surface text-secondary border-neutral hover:border-primary hover:text-primary
+                      {% endif %}">
+                Todos
+            </a>
+
+            <!-- Tab por cada categoría activa -->
+            {% for cat in categorias %}
+            <a href="{% url 'catalogo:lista' %}?categoria={{ cat.slug }}"
+               class="font-sans text-sm font-medium tracking-wide px-5 py-2 border transition-colors duration-200
+                      {% if categoria_activa.slug == cat.slug %}
+                          bg-primary text-white border-primary
+                      {% else %}
+                          bg-surface text-secondary border-neutral hover:border-primary hover:text-primary
+                      {% endif %}">
+                {{ cat.nombre }}
+            </a>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     GRID DE PRODUCTOS
+     Fondo: neutral (#F9F9F9) · Cards con bordes rectos
+     ═══════════════════════════════════════════════════ -->
+<section class="bg-neutral py-section">
+    <div class="max-w-7xl mx-auto px-container">
+
+        {% if productos %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for producto in productos %}
+
+                <!-- ── CARD DE PRODUCTO ── -->
+                <article class="group bg-surface flex flex-col overflow-hidden
+                                border border-transparent hover:border-neutral
+                                transition-all duration-300">
+
+                    <!-- Imagen del producto -->
+                    <div class="relative overflow-hidden aspect-square bg-neutral">
+                        {% if producto.imagen %}
+                            <img
+                                src="{{ producto.imagen.url }}"
+                                alt="{{ producto.nombre }}"
+                                class="w-full h-full object-cover
+                                       transition-transform duration-500 group-hover:scale-105"
+                            >
+                        {% else %}
+                            <!-- Placeholder editorial si no hay imagen -->
+                            <div class="w-full h-full flex items-center justify-center bg-neutral">
+                                <span class="font-serif italic text-secondary/40 text-sm">Sin imagen</span>
+                            </div>
+                        {% endif %}
+
+                        <!-- Badge "Destacado" -->
+                        {% if producto.destacado %}
+                        <span class="absolute top-3 left-3 bg-primary text-white
+                                     font-sans text-[10px] font-semibold tracking-widest
+                                     uppercase px-3 py-1">
+                            Destacado
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Información del producto -->
+                    <div class="flex flex-col flex-1 p-5">
+
+                        <!-- Categoría -->
+                        <span class="font-sans text-[10px] font-semibold tracking-[0.25em] uppercase
+                                     text-secondary/50 mb-2">
+                            {{ producto.categoria.nombre }}
+                        </span>
+
+                        <!-- Nombre -->
+                        <h2 class="font-serif text-xl font-bold text-primary leading-snug mb-3 flex-1">
+                            {{ producto.nombre }}
+                        </h2>
+
+                        <!-- Descripción (truncada) -->
+                        {% if producto.descripcion %}
+                        <p class="font-sans text-sm text-secondary leading-relaxed mb-4 line-clamp-2">
+                            {{ producto.descripcion }}
+                        </p>
+                        {% endif %}
+
+                        <!-- Precio + Botón -->
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-neutral">
+                            <span class="font-serif text-2xl font-bold text-primary">
+                                ${{ producto.precio }}
+                            </span>
+                            <a href="#"
+                               class="font-sans text-xs font-semibold tracking-widest uppercase
+                                      bg-primary text-white px-5 py-2
+                                      hover:opacity-80 transition-opacity duration-200">
+                                Pedir
+                            </a>
+                        </div>
+
+                    </div>
+                </article>
+
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <!-- Estado vacío — editorial y limpio -->
+            <div class="text-center py-24">
+                <p class="font-serif text-3xl italic text-secondary/40 mb-4">Sin productos por aquí.</p>
+                <p class="font-sans text-sm text-secondary/50">
+                    Prueba otra categoría o vuelve pronto — ¡el horno no para!
+                </p>
+                <a href="{% url 'catalogo:lista' %}" class="btn-editorial mt-8 inline-block">
+                    Ver todo el catálogo
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

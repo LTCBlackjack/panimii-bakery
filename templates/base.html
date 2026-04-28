@@ -89,7 +89,7 @@
     <header class="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b border-neutral">
         <nav class="max-w-7xl mx-auto flex items-center justify-between px-container py-5">
             <!-- Logo -->
-            <a href="{% url 'admin:index' %}" class="font-serif text-2xl font-bold tracking-widest text-primary">
+            <a href="{% url 'home' %}" class="font-serif text-2xl font-bold tracking-widest text-primary">
                 PANIIMI
             </a>
 
@@ -113,8 +113,8 @@
                        max-md:flex-col max-md:items-center max-md:gap-0 max-md:border-b max-md:border-neutral
                        max-md:shadow-sm"
             >
-                <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Inicio</a></li>
-                <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Catálogo</a></li>
+                <li><a href="{% url 'home' %}" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Inicio</a></li>
+                <li><a href="{% url 'catalogo:lista' %}" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Catálogo</a></li>
                 <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Nosotros</a></li>
                 <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Envíos</a></li>
             </ul>
@@ -151,8 +151,8 @@
                 <div>
                     <h4 class="font-sans text-xs font-semibold tracking-widest uppercase text-white/40 mb-4">Navegación</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Inicio</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Catálogo</a></li>
+                        <li><a href="{% url 'home' %}" class="text-white/70 hover:text-white transition-colors duration-200">Inicio</a></li>
+                        <li><a href="{% url 'catalogo:lista' %}" class="text-white/70 hover:text-white transition-colors duration-200">Catálogo</a></li>
                         <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Nosotros</a></li>
                         <li><a href="#" class="text-white/70 hover:text-white transition-colors duration-200">Envíos</a></li>
                     </ul>
