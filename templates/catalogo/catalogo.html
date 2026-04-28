@@ -4,157 +4,165 @@
 {% block title %}Catálogo — Panimii Bakery{% endblock %}
 {% block meta_description %}Explora nuestra colección de galletas artesanales y roles de canela. Horneado con paciencia en Paniimi Bakery.{% endblock %}
 
+{% block extra_head %}
+<style>
+    /* ── Masonry CSS puro — columnas editoriales ── */
+    .masonry-grid {
+        columns: 2;
+        column-gap: 2rem;
+    }
+    @media (min-width: 768px) {
+        .masonry-grid { columns: 3; }
+    }
+    @media (min-width: 1280px) {
+        .masonry-grid { columns: 4; }
+    }
+    .masonry-item {
+        break-inside: avoid;
+        margin-bottom: 2.5rem;
+    }
+    /* Limitar descripción a 2 líneas */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<!-- ═══════════════════════════════════════════════════════
-     CABECERA DEL CATÁLOGO
-     Fondo: surface (#FFFFFF) · Tipografía: Playfair Display
-     ═══════════════════════════════════════════════════ -->
-<section class="bg-surface pt-section pb-12">
+<!-- ═══════════════════════════════════════════════
+     CABECERA EDITORIAL
+     surface (#FFF) — título itálico + filtros
+     ═══════════════════════════════════════════ -->
+<section class="bg-surface pt-16 pb-10">
     <div class="max-w-7xl mx-auto px-container">
 
-        <!-- Título editorial -->
-        <div class="mb-10">
-            <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
-                Nuestra Colección
-            </span>
-            <h1 class="font-serif text-5xl lg:text-6xl font-bold text-primary leading-tight">
-                {% if categoria_activa %}
-                    {{ categoria_activa.nombre }}
-                {% else %}
-                    Todo el Catálogo
-                {% endif %}
-            </h1>
-        </div>
+        <!-- Etiqueta supratítulo -->
+        <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
+            Colección {% now "Y" %}
+        </span>
 
-        <!-- Filtros por categoría — Tabs editoriales -->
-        <div class="flex flex-wrap items-center gap-3 border-b border-neutral pb-8">
+        <!-- Título principal — serif itálica, máximo impacto tipográfico -->
+        <h1 class="font-serif italic font-normal text-primary mb-10"
+            style="font-size: clamp(2.8rem, 7vw, 6rem); line-height: 1.05;">
+            {% if categoria_activa %}
+                Nuestras {{ categoria_activa.nombre }}
+            {% else %}
+                Toda la Colección
+            {% endif %}
+        </h1>
 
-            <!-- Tab "Todos" -->
+        <!-- ── Filtros de categoría — subrayado editorial ── -->
+        <nav class="flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-neutral pb-6">
             <a href="{% url 'catalogo:lista' %}"
-               class="font-sans text-sm font-medium tracking-wide px-5 py-2 border transition-colors duration-200
-                      {% if not categoria_activa %}
-                          bg-primary text-white border-primary
-                      {% else %}
-                          bg-surface text-secondary border-neutral hover:border-primary hover:text-primary
-                      {% endif %}">
-                Todos
+               class="font-sans text-xs font-semibold tracking-[0.25em] uppercase pb-1 transition-colors duration-200
+                      {% if not categoria_activa %}border-b-2 border-primary text-primary{% else %}text-secondary/60 hover:text-primary border-b-2 border-transparent{% endif %}">
+                Vista General
             </a>
-
-            <!-- Tab por cada categoría activa -->
             {% for cat in categorias %}
             <a href="{% url 'catalogo:lista' %}?categoria={{ cat.slug }}"
-               class="font-sans text-sm font-medium tracking-wide px-5 py-2 border transition-colors duration-200
-                      {% if categoria_activa.slug == cat.slug %}
-                          bg-primary text-white border-primary
-                      {% else %}
-                          bg-surface text-secondary border-neutral hover:border-primary hover:text-primary
-                      {% endif %}">
+               class="font-sans text-xs font-semibold tracking-[0.25em] uppercase pb-1 transition-colors duration-200
+                      {% if categoria_activa.slug == cat.slug %}border-b-2 border-primary text-primary{% else %}text-secondary/60 hover:text-primary border-b-2 border-transparent{% endif %}">
                 {{ cat.nombre }}
             </a>
             {% endfor %}
+        </nav>
 
-        </div>
     </div>
 </section>
 
 
-<!-- ═══════════════════════════════════════════════════════
-     GRID DE PRODUCTOS
-     Fondo: neutral (#F9F9F9) · Cards con bordes rectos
-     ═══════════════════════════════════════════════════ -->
-<section class="bg-neutral py-section">
-    <div class="max-w-7xl mx-auto px-container">
+<!-- ═══════════════════════════════════════════════
+     GRID MASONRY DE PRODUCTOS
+     neutral (#F9F9F9) — productos flotantes
+     ═══════════════════════════════════════════ -->
+<section class="bg-neutral pb-section">
+    <div class="max-w-7xl mx-auto px-container pt-12">
 
         {% if productos %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {% for producto in productos %}
+        <div class="masonry-grid">
+            {% for producto in productos %}
 
-                <!-- ── CARD DE PRODUCTO ── -->
-                <article class="group bg-surface flex flex-col overflow-hidden
-                                border border-transparent hover:border-neutral
-                                transition-all duration-300">
+            <!-- ── ÍTEM MASONRY — sin card, producto flotante ── -->
+            <article class="masonry-item group">
 
-                    <!-- Imagen del producto -->
-                    <div class="relative overflow-hidden aspect-square bg-neutral">
-                        {% if producto.imagen %}
-                            <img
-                                src="{{ producto.imagen.url }}"
-                                alt="{{ producto.nombre }}"
-                                class="w-full h-full object-cover
-                                       transition-transform duration-500 group-hover:scale-105"
-                            >
-                        {% else %}
-                            <!-- Placeholder editorial si no hay imagen -->
-                            <div class="w-full h-full flex items-center justify-center bg-neutral">
-                                <span class="font-serif italic text-secondary/40 text-sm">Sin imagen</span>
-                            </div>
-                        {% endif %}
-
-                        <!-- Badge "Destacado" -->
-                        {% if producto.destacado %}
-                        <span class="absolute top-3 left-3 bg-primary text-white
-                                     font-sans text-[10px] font-semibold tracking-widest
-                                     uppercase px-3 py-1">
-                            Destacado
-                        </span>
-                        {% endif %}
-                    </div>
-
-                    <!-- Información del producto -->
-                    <div class="flex flex-col flex-1 p-5">
-
-                        <!-- Categoría -->
-                        <span class="font-sans text-[10px] font-semibold tracking-[0.25em] uppercase
-                                     text-secondary/50 mb-2">
-                            {{ producto.categoria.nombre }}
-                        </span>
-
-                        <!-- Nombre -->
-                        <h2 class="font-serif text-xl font-bold text-primary leading-snug mb-3 flex-1">
-                            {{ producto.nombre }}
-                        </h2>
-
-                        <!-- Descripción (truncada) -->
-                        {% if producto.descripcion %}
-                        <p class="font-sans text-sm text-secondary leading-relaxed mb-4 line-clamp-2">
-                            {{ producto.descripcion }}
-                        </p>
-                        {% endif %}
-
-                        <!-- Precio + Botón -->
-                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-neutral">
-                            <span class="font-serif text-2xl font-bold text-primary">
-                                ${{ producto.precio }}
-                            </span>
-                            <a href="#"
-                               class="font-sans text-xs font-semibold tracking-widest uppercase
-                                      bg-primary text-white px-5 py-2
-                                      hover:opacity-80 transition-opacity duration-200">
-                                Pedir
-                            </a>
+                <!-- Imagen — sin contenedor cuadrado, altura natural -->
+                <div class="relative overflow-hidden mb-4">
+                    {% if producto.imagen %}
+                        <img
+                            src="{{ producto.imagen.url }}"
+                            alt="{{ producto.nombre }}"
+                            class="w-full h-auto object-cover block
+                                   transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        >
+                    {% else %}
+                        <div class="w-full bg-neutral/60 flex items-center justify-center"
+                             style="aspect-ratio: 3/4;">
+                            <span class="font-serif italic text-secondary/30 text-sm">Sin imagen</span>
                         </div>
+                    {% endif %}
 
-                    </div>
-                </article>
+                    <!-- Badge Destacado -->
+                    {% if producto.destacado %}
+                    <span class="absolute top-3 left-3 bg-primary text-white
+                                 font-sans text-[9px] font-semibold tracking-widest uppercase
+                                 px-3 py-[5px]">
+                        Nueva
+                    </span>
+                    {% endif %}
+                </div>
 
-                {% endfor %}
-            </div>
+                <!-- Info del producto: nombre + precio en misma línea -->
+                <div class="flex items-baseline justify-between gap-4 mb-1">
+                    <h2 class="font-serif italic font-normal text-primary leading-tight text-xl">
+                        {{ producto.nombre }}
+                    </h2>
+                    <span class="font-sans text-sm font-medium text-primary whitespace-nowrap flex-shrink-0">
+                        ${{ producto.precio }}
+                    </span>
+                </div>
+
+                <!-- Descripción breve -->
+                {% if producto.descripcion %}
+                <p class="font-sans text-xs text-secondary/70 leading-relaxed line-clamp-2">
+                    {{ producto.descripcion }}
+                </p>
+                {% endif %}
+
+            </article>
+
+            {% endfor %}
+        </div>
 
         {% else %}
-            <!-- Estado vacío — editorial y limpio -->
-            <div class="text-center py-24">
-                <p class="font-serif text-3xl italic text-secondary/40 mb-4">Sin productos por aquí.</p>
-                <p class="font-sans text-sm text-secondary/50">
-                    Prueba otra categoría o vuelve pronto — ¡el horno no para!
-                </p>
-                <a href="{% url 'catalogo:lista' %}" class="btn-editorial mt-8 inline-block">
-                    Ver todo el catálogo
-                </a>
-            </div>
+        <!-- Estado vacío editorial -->
+        <div class="text-center py-32">
+            <p class="font-serif italic text-4xl text-secondary/30 mb-4">Sin productos por aquí.</p>
+            <p class="font-sans text-sm text-secondary/50 mb-8">El horno está caliente — vuelve pronto.</p>
+            <a href="{% url 'catalogo:lista' %}" class="btn-editorial">Ver todo</a>
+        </div>
         {% endif %}
 
     </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     CIERRE DE MARCA
+     surface (#FFF) — ilustración + frase editorial
+     ═══════════════════════════════════════════ -->
+<section class="bg-surface py-20 text-center">
+    <img
+        src="{% static 'img/oso_comiendo_galleta.webp' %}"
+        alt="Oso Paniimi"
+        class="w-24 h-24 object-contain mx-auto mb-5 opacity-70"
+    >
+    <p class="font-serif italic text-secondary/60 text-xl tracking-wide">
+        "Artesanía en cada mordida"
+    </p>
 </section>
 
 {% endblock %}
