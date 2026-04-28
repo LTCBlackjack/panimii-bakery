@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contacto y Envíos — Panimii Bakery{% endblock %}
+{% block meta_description %}Contáctanos para pedidos especiales, información de envíos y cobertura en Mérida y el interior de Yucatán.{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── Inputs editoriales — focus con contorno negro ── */
+    .input-editorial {
+        @apply w-full bg-surface border border-neutral
+               font-sans text-sm text-primary placeholder-secondary/40
+               px-4 py-3 outline-none
+               transition-colors duration-200
+               focus:border-primary;
+        border-radius: 0;          /* rounded-editorial-none: 0px */
+    }
+    .input-editorial:focus {
+        box-shadow: none;
+    }
+    /* Auto-dismiss del flash después de 4s */
+    @keyframes fadeOut {
+        0%   { opacity: 1; transform: translateY(0); }
+        80%  { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-8px); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════
+     CABECERA EDITORIAL
+     surface (#FFFFFF) — título Playfair Display
+     ═══════════════════════════════════════════════ -->
+<section class="bg-surface pt-16 pb-12">
+    <div class="max-w-7xl mx-auto px-container">
+        <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
+            Hablemos
+        </span>
+        <h1 class="font-serif text-5xl lg:text-6xl font-bold text-primary leading-tight">
+            Contacto <span class="italic font-normal">& Envíos</span>
+        </h1>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     CUERPO PRINCIPAL — Layout 2 columnas
+     neutral (#F9F9F9) — formulario | info logística
+     ═══════════════════════════════════════════════ -->
+<section class="bg-neutral py-section">
+    <div class="max-w-7xl mx-auto px-container">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+
+            <!-- ══ COLUMNA IZQUIERDA: Formulario ══════════════════════ -->
+            <div class="lg:col-span-7">
+
+                <h2 class="font-serif text-2xl font-bold text-primary mb-2">
+                    Envíanos un mensaje
+                </h2>
+                <p class="font-sans text-sm text-secondary/70 mb-8 leading-relaxed">
+                    Pedidos especiales, fechas de entrega o simplemente saludar —
+                    lo leemos todo.
+                </p>
+
+                <form method="POST" action="{% url 'contacto' %}" novalidate class="space-y-5">
+                    {% csrf_token %}
+
+                    <!-- Campo: Nombre -->
+                    <div>
+                        <label for="{{ form.nombre.id_for_label }}"
+                               class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                            Nombre completo
+                        </label>
+                        <input
+                            type="text"
+                            name="{{ form.nombre.html_name }}"
+                            id="{{ form.nombre.id_for_label }}"
+                            value="{{ form.nombre.value|default:'' }}"
+                            placeholder="Tu nombre"
+                            autocomplete="name"
+                            class="input-editorial {% if form.nombre.errors %}border-red-500{% endif %}"
+                        >
+                        {% if form.nombre.errors %}
+                        <p class="font-sans text-xs text-red-500 mt-1">{{ form.nombre.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Campo: Email -->
+                    <div>
+                        <label for="{{ form.email.id_for_label }}"
+                               class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                            Correo electrónico
+                        </label>
+                        <input
+                            type="email"
+                            name="{{ form.email.html_name }}"
+                            id="{{ form.email.id_for_label }}"
+                            value="{{ form.email.value|default:'' }}"
+                            placeholder="correo@ejemplo.com"
+                            autocomplete="email"
+                            class="input-editorial {% if form.email.errors %}border-red-500{% endif %}"
+                        >
+                        {% if form.email.errors %}
+                        <p class="font-sans text-xs text-red-500 mt-1">{{ form.email.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Campo: Mensaje -->
+                    <div>
+                        <label for="{{ form.mensaje.id_for_label }}"
+                               class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                            Mensaje o pedido especial
+                        </label>
+                        <textarea
+                            name="{{ form.mensaje.html_name }}"
+                            id="{{ form.mensaje.id_for_label }}"
+                            rows="6"
+                            placeholder="¿Qué tienes en mente? Cuéntanos tu pedido, sabor favorito, fecha de entrega..."
+                            class="input-editorial resize-none {% if form.mensaje.errors %}border-red-500{% endif %}"
+                        >{{ form.mensaje.value|default:'' }}</textarea>
+                        {% if form.mensaje.errors %}
+                        <p class="font-sans text-xs text-red-500 mt-1">{{ form.mensaje.errors|join:', ' }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Botón de envío -->
+                    <div class="pt-2">
+                        <button type="submit" class="btn-editorial w-full sm:w-auto">
+                            Enviar mensaje
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+
+            <!-- ══ COLUMNA DERECHA: Información de logística ══════════ -->
+            <div class="lg:col-span-5 lg:pt-14">
+
+                <!-- Separador visual editorial -->
+                <div class="w-8 h-[2px] bg-primary mb-8 hidden lg:block"></div>
+
+                <!-- Bloque: Zonas de cobertura -->
+                <div class="mb-10">
+                    <h3 class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-4">
+                        Zonas de Cobertura
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="mt-[5px] w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
+                            <div>
+                                <p class="font-sans text-sm font-semibold text-primary">Mérida — Zona Centro</p>
+                                <p class="font-sans text-xs text-secondary/60 leading-relaxed">
+                                    Entrega a domicilio disponible cualquier día de la semana.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-[5px] w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0"></span>
+                            <div>
+                                <p class="font-sans text-sm font-semibold text-primary">Mérida — Norte y Periférico</p>
+                                <p class="font-sans text-xs text-secondary/60 leading-relaxed">
+                                    Colonias Montejo, Altabrisa, Temozón Norte y Cholul.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="mt-[5px] w-1.5 h-1.5 rounded-full bg-secondary/30 flex-shrink-0"></span>
+                            <div>
+                                <p class="font-sans text-sm font-semibold text-primary">Interior del Estado</p>
+                                <p class="font-sans text-xs text-secondary/60 leading-relaxed">
+                                    Progreso, Valladolid y Izamal — disponible con pedido previo
+                                    mínimo de 72 horas y empaque especial para viaje.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Bloque: Tiempos de entrega -->
+                <div class="mb-10 border-t border-neutral pt-8">
+                    <h3 class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-4">
+                        Tiempos de Entrega
+                    </h3>
+                    <div class="space-y-2 font-sans text-sm text-secondary leading-relaxed">
+                        <p><span class="font-semibold text-primary">Pedidos locales:</span> 24 – 48 horas.</p>
+                        <p><span class="font-semibold text-primary">Pedidos foráneos:</span> 72 horas mínimo.</p>
+                        <p><span class="font-semibold text-primary">Pedidos especiales</span> (fondants, decorados): 5 días hábiles.</p>
+                    </div>
+                </div>
+
+                <!-- Bloque: Contacto directo -->
+                <div class="border-t border-neutral pt-8">
+                    <h3 class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-4">
+                        Contacto Directo
+                    </h3>
+                    <div class="space-y-2 font-sans text-sm text-secondary">
+                        <p>
+                            <span class="font-semibold text-primary block">Instagram</span>
+                            <a href="#" class="hover:text-primary transition-colors duration-200">@paniimi.bakery</a>
+                        </p>
+                        <p>
+                            <span class="font-semibold text-primary block">WhatsApp</span>
+                            <a href="https://wa.me/529991234567" target="_blank" rel="noopener"
+                               class="hover:text-primary transition-colors duration-200">+52 999 123 4567</a>
+                        </p>
+                        <p>
+                            <span class="font-semibold text-primary block">Correo</span>
+                            <a href="mailto:contacto@paniimi.com"
+                               class="hover:text-primary transition-colors duration-200">contacto@paniimi.com</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
