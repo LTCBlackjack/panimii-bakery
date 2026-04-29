@@ -44,6 +44,17 @@
                         'section':   '80px',  /* Padding vertical entre secciones */
                         'container': '24px',  /* Padding lateral de contenedores  */
                     },
+                    /* ── Micro-interacciones: keyframes ── */
+                    keyframes: {
+                        fadeInUp: {
+                            '0%':   { opacity: '0', transform: 'translateY(28px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                    animation: {
+                        /* fill-mode: both → aplica el frame 0% incluso durante el delay */
+                        'fade-in-up': 'fadeInUp 0.7s cubic-bezier(0.22,1,0.36,1) both',
+                    },
                 },
             },
         }
@@ -70,11 +81,32 @@
         }
 
         /* Botón editorial: fondo negro, texto blanco, bordes rectos */
+        /* hover: sube 2px + sombra sutil; active: vuelve a la base  */
         .btn-editorial {
             @apply inline-block bg-primary text-white font-sans text-sm font-medium
                    tracking-wider uppercase px-8 py-3 rounded-editorial-sm
-                   transition-opacity duration-300 hover:opacity-80;
+                   transition-all duration-300
+                   hover:opacity-90 hover:-translate-y-0.5 hover:shadow-md
+                   active:translate-y-0 active:shadow-none;
         }
+
+        /* ── Scroll Reveal ─────────────────────────────────────────── */
+        /* Estado inicial: invisible + desplazado hacia abajo 32px    */
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.75s cubic-bezier(0.22,1,0.36,1);
+        }
+        /* Estado visible: Intersection Observer añade esta clase     */
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Delay escalonado para hijos directos del reveal             */
+        .reveal-stagger > *:nth-child(1) { transition-delay: 0ms;   }
+        .reveal-stagger > *:nth-child(2) { transition-delay: 120ms; }
+        .reveal-stagger > *:nth-child(3) { transition-delay: 240ms; }
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -224,6 +256,33 @@
         });
     </script>
 
+    <!-- ── Script: Scroll Reveal (Intersection Observer) ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var revealEls = document.querySelectorAll('.reveal');
+            if (!revealEls.length) return;
+
+            var observer = new IntersectionObserver(
+                function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                {
+                    threshold:  0.08,
+                    rootMargin: '0px 0px -20px 0px',
+                }
+            );
+
+            revealEls.forEach(function (el) { observer.observe(el); });
+        });
+    </script>
+
+
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>

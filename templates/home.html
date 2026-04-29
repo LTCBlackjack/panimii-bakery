@@ -7,8 +7,8 @@
 
 <!-- ═══════════════════════════════════════════════════════
      SECCIÓN 1 — HERO
-     Layout: Asimétrico 5-col texto / 7-col imagen
-     Fondo:  surface (#FFFFFF) · Imagen: oso_acostado.webp
+     Micro-interacción: Fade-in escalonado al cargar
+     Título → 0ms · Párrafo → 200ms · Botón → 400ms
      ═══════════════════════════════════════════════════ -->
 <section class="section-surface overflow-hidden">
     <div class="max-w-7xl mx-auto px-container">
@@ -16,32 +16,52 @@
 
             <!-- Bloque de texto (cols 1–5) -->
             <div class="lg:col-span-5 lg:pr-12">
-                <h1 class="font-serif text-5xl lg:text-6xl xl:text-7xl font-bold text-primary leading-[1.08] mb-8">
+
+                <!-- [1] Título — anima inmediatamente -->
+                <h1 class="font-serif text-5xl lg:text-6xl xl:text-7xl font-bold text-primary
+                            leading-[1.08] mb-8
+                            animate-fade-in-up"
+                    style="animation-delay: 0ms;">
                     El Arte de la
                     <span class="italic font-normal block">Galleta Perfecta</span>
                 </h1>
-                <p class="font-sans text-base text-secondary leading-relaxed mb-10 max-w-sm">
+
+                <!-- [2] Párrafo — 200ms después -->
+                <p class="font-sans text-base text-secondary leading-relaxed mb-10 max-w-sm
+                           animate-fade-in-up"
+                   style="animation-delay: 200ms;">
                     Artesanía pura en cada mordida. Descubre nuestra colección
                     de galletas de autor, horneadas diariamente para elevar tu paladar.
                 </p>
-                <a href="#" class="btn-editorial">Ver Catálogo</a>
+
+                <!-- [3] Botón — 400ms después -->
+                <!-- Micro-interacción: hover sube 2px + sombra (definido en .btn-editorial) -->
+                <div class="animate-fade-in-up" style="animation-delay: 400ms;">
+                    <a href="{% url 'catalogo:lista' %}" class="btn-editorial">Ver Catálogo</a>
+                </div>
+
             </div>
 
             <!-- Bloque de imagen (cols 6–12) -->
-            <div class="lg:col-span-7 relative">
+            <!-- [4] Imagen — fade-in con delay mayor + zoom al hover -->
+            <div class="lg:col-span-7 relative animate-fade-in-up" style="animation-delay: 300ms;">
 
                 <!-- Marco gris de fondo — detalle editorial -->
                 <div class="absolute inset-y-0 right-0 w-[90%] bg-neutral -z-10"></div>
 
-                <!-- Imagen principal -->
-                <img
-                    src="{% static 'img/oso_acostado.webp' %}"
-                    alt="Oso polar acostado sobre galletas artesanales"
-                    class="relative z-10 w-full h-auto object-contain"
-                >
+                <!-- Imagen: overflow-hidden para contener el scale; zoom en hover -->
+                <div class="relative z-10 overflow-hidden">
+                    <img
+                        src="{% static 'img/oso_acostado.webp' %}"
+                        alt="Oso polar acostado sobre galletas artesanales"
+                        class="w-full h-auto object-contain
+                               transition-transform duration-700 ease-out
+                               hover:scale-[1.04]"
+                    >
+                </div>
 
                 <!-- Caption flotante — esquina inferior izquierda -->
-                <div class="absolute bottom-8 left-0 bg-surface border border-neutral p-4 shadow-md hidden md:block max-w-[180px]">
+                <div class="absolute bottom-8 left-0 bg-surface border border-neutral p-4 shadow-md hidden md:block max-w-[180px] z-20">
                     <span class="font-serif italic text-xs text-primary leading-snug block">
                         "Tan buenas que no querrás compartir."
                     </span>
@@ -56,24 +76,29 @@
 
 <!-- ═══════════════════════════════════════════════════════
      SECCIÓN 2 — HORNEADO CON PACIENCIA
-     Layout: Imagen izq. (cols 1–4) / Texto der. (cols 6–12)
-     Fondo:  neutral (#F9F9F9) · Imagen: oso_envio.webp
+     Micro-interacción: Scroll Reveal — desliza desde abajo
+     reveal-stagger: imagen 0ms · etiqueta 120ms · h2 y p 240ms
      ═══════════════════════════════════════════════════ -->
 <section class="section-neutral">
     <div class="max-w-7xl mx-auto px-container">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-            <!-- Ilustración izquierda (cols 1–4) -->
-            <div class="lg:col-span-4 flex justify-center lg:justify-start">
-                <img
-                    src="{% static 'img/oso_envio.webp' %}"
-                    alt="Oso polar enviando un paquete de galletas"
-                    class="w-56 lg:w-full max-w-xs h-auto object-contain"
-                >
+            <!-- Ilustración izquierda — Scroll Reveal con zoom hover -->
+            <div class="lg:col-span-4 flex justify-center lg:justify-start reveal">
+                <div class="overflow-hidden">
+                    <img
+                        src="{% static 'img/oso_envio.webp' %}"
+                        alt="Oso polar enviando un paquete de galletas"
+                        class="w-56 lg:w-full max-w-xs h-auto object-contain
+                               transition-transform duration-700 ease-out
+                               hover:scale-105"
+                    >
+                </div>
             </div>
 
-            <!-- Texto derecha (cols 5–12) -->
-            <div class="lg:col-span-8 lg:pl-8">
+            <!-- Texto derecha — Scroll Reveal escalonado -->
+            <div class="lg:col-span-8 lg:pl-8 reveal reveal-stagger"
+                 style="transition-delay: 100ms;">
                 <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-5 block">
                     Nuestra Esencia
                 </span>
@@ -94,15 +119,14 @@
 
 <!-- ═══════════════════════════════════════════════════════
      SECCIÓN 3 — NOSOTROS
-     Layout: Texto izq. (cols 1–6) / Imagen der. (cols 7–12)
-     Fondo:  surface (#FFFFFF) · Imagen: oso_comiendo_galleta.webp
+     Micro-interacción: Scroll Reveal — texto izq, imagen der
      ═══════════════════════════════════════════════════ -->
 <section class="section-surface">
     <div class="max-w-7xl mx-auto px-container">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-            <!-- Texto izquierda (cols 1–6) -->
-            <div class="lg:col-span-6">
+            <!-- Texto izquierda — Scroll Reveal -->
+            <div class="lg:col-span-6 reveal">
                 <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-5 block">
                     Sobre Nosotros
                 </span>
@@ -115,14 +139,19 @@
                     Cada receta es probada decenas de veces antes de llegar a tus manos.
                     No creemos en los atajos, creemos en el sabor.
                 </p>
+                <!-- Link secundario — underline animado -->
                 <a href="#"
-                   class="font-sans text-sm font-bold tracking-wide border-b-2 border-primary pb-1 hover:text-secondary transition-colors duration-200">
+                   class="font-sans text-sm font-bold tracking-wide
+                          border-b-2 border-primary pb-1
+                          hover:text-secondary hover:border-secondary
+                          transition-colors duration-300">
                     Leer más →
                 </a>
             </div>
 
-            <!-- Imagen derecha (cols 7–12) -->
-            <div class="lg:col-span-6 relative flex justify-end">
+            <!-- Imagen derecha — Scroll Reveal + zoom hover (delay 150ms) -->
+            <div class="lg:col-span-6 relative flex justify-end reveal"
+                 style="transition-delay: 150ms;">
 
                 <!-- Acento editorial vertical -->
                 <span class="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -rotate-90
@@ -131,11 +160,16 @@
                     Paniimi Bakery · Desde México
                 </span>
 
-                <img
-                    src="{% static 'img/oso_comiendo_galleta.webp' %}"
-                    alt="Oso polar disfrutando una galleta"
-                    class="w-full max-w-sm lg:max-w-full h-auto object-contain"
-                >
+                <!-- Contenedor con overflow-hidden para contener el scale -->
+                <div class="overflow-hidden w-full max-w-sm lg:max-w-full">
+                    <img
+                        src="{% static 'img/oso_comiendo_galleta.webp' %}"
+                        alt="Oso polar disfrutando una galleta"
+                        class="w-full h-auto object-contain
+                               transition-transform duration-700 ease-out
+                               hover:scale-105"
+                    >
+                </div>
             </div>
 
         </div>
