@@ -2,23 +2,19 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 
-from .forms import ContactoForm
+from .forms import ContactoForm, RegistroForm
 
 logger = logging.getLogger(__name__)
 
 
 def contacto(request):
     """
-    Vista de la página de contacto.
-
-    GET  → muestra el formulario vacío.
-    POST → valida; si es válido envía el correo vía SMTP y redirige
-           (patrón PRG para evitar reenvíos al refrescar).
-           Si el envío falla, muestra un error amigable sin exponer
-           los detalles técnicos al usuario.
+    GET  → formulario vacío.
+    POST → envía correo SMTP y redirige (PRG).
     """
     if request.method == 'POST':
         form = ContactoForm(request.POST)
@@ -39,18 +35,14 @@ def contacto(request):
 
             try:
                 send_mail(
-                    subject      = asunto,
-                    message      = cuerpo,
-                    from_email   = settings.DEFAULT_FROM_EMAIL,
+                    subject        = asunto,
+                    message        = cuerpo,
+                    from_email     = settings.DEFAULT_FROM_EMAIL,
                     recipient_list = [settings.EMAIL_DESTINATARIO],
-                    fail_silently= False,
+                    fail_silently  = False,
                 )
-                messages.success(
-                    request,
-                    '¡Mensaje enviado! Te contestaremos pronto. 🐻',
-                )
+                messages.success(request, '¡Mensaje enviado! Te contestaremos pronto. 🐻')
             except Exception as exc:
-                # Registra el error en el log del servidor sin exponerlo al usuario
                 logger.error('Error al enviar correo de contacto: %s', exc)
                 messages.error(
                     request,
@@ -63,3 +55,26 @@ def contacto(request):
         form = ContactoForm()
 
     return render(request, 'contacto.html', {'form': form})
+
+
+def registro(request):
+    """
+    Vista de registro público.
+
+    GET  → formulario vacío.
+    POST → crea el usuario, lo autentica automáticamente y redirige al inicio.
+    """
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, f'¡Bienvenido, {user.username}! Tu cuenta fue creada.')
+            return redirect('home')
+    else:
+        form = RegistroForm()
+
+    return render(request, 'registro.html', {'form': form})

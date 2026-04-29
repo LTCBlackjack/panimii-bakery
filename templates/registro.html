@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Cuenta — Panimii Bakery{% endblock %}
+{% block meta_description %}Crea tu cuenta en Paniimi Bakery para hacer pedidos y seguir tus envíos.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .input-auth {
+        @apply w-full bg-surface border border-neutral
+               font-sans text-sm text-primary placeholder-secondary/40
+               px-4 py-3 outline-none transition-colors duration-200
+               focus:border-primary;
+        border-radius: 0;
+    }
+    .input-auth:focus { box-shadow: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="bg-neutral min-h-[calc(100vh-80px)] flex items-center py-section">
+    <div class="w-full max-w-md mx-auto px-container">
+
+        <!-- Cabecera -->
+        <div class="mb-10">
+            <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
+                Únete a Paniimi
+            </span>
+            <h1 class="font-serif text-4xl font-bold text-primary">
+                Crear <span class="italic font-normal">Cuenta</span>
+            </h1>
+        </div>
+
+        <!-- Formulario -->
+        <form method="POST" action="{% url 'registro' %}" novalidate class="space-y-5">
+            {% csrf_token %}
+
+            <!-- Usuario -->
+            <div>
+                <label for="{{ form.username.id_for_label }}"
+                       class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                    {{ form.username.label }}
+                </label>
+                <input
+                    type="text"
+                    name="{{ form.username.html_name }}"
+                    id="{{ form.username.id_for_label }}"
+                    value="{{ form.username.value|default:'' }}"
+                    placeholder="tu_usuario"
+                    autocomplete="username"
+                    autofocus
+                    class="input-auth {% if form.username.errors %}border-red-400{% endif %}"
+                >
+                {% if form.username.errors %}
+                <p class="font-sans text-xs text-red-500 mt-1">{{ form.username.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="{{ form.email.id_for_label }}"
+                       class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                    {{ form.email.label }}
+                </label>
+                <input
+                    type="email"
+                    name="{{ form.email.html_name }}"
+                    id="{{ form.email.id_for_label }}"
+                    value="{{ form.email.value|default:'' }}"
+                    placeholder="correo@ejemplo.com"
+                    autocomplete="email"
+                    class="input-auth {% if form.email.errors %}border-red-400{% endif %}"
+                >
+                {% if form.email.errors %}
+                <p class="font-sans text-xs text-red-500 mt-1">{{ form.email.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Contraseña -->
+            <div>
+                <label for="{{ form.password1.id_for_label }}"
+                       class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                    {{ form.password1.label }}
+                </label>
+                <input
+                    type="password"
+                    name="{{ form.password1.html_name }}"
+                    id="{{ form.password1.id_for_label }}"
+                    placeholder="••••••••"
+                    autocomplete="new-password"
+                    class="input-auth {% if form.password1.errors %}border-red-400{% endif %}"
+                >
+                {% if form.password1.errors %}
+                <p class="font-sans text-xs text-red-500 mt-1">{{ form.password1.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Confirmar contraseña -->
+            <div>
+                <label for="{{ form.password2.id_for_label }}"
+                       class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                    {{ form.password2.label }}
+                </label>
+                <input
+                    type="password"
+                    name="{{ form.password2.html_name }}"
+                    id="{{ form.password2.id_for_label }}"
+                    placeholder="••••••••"
+                    autocomplete="new-password"
+                    class="input-auth {% if form.password2.errors %}border-red-400{% endif %}"
+                >
+                {% if form.password2.errors %}
+                <p class="font-sans text-xs text-red-500 mt-1">{{ form.password2.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Botón -->
+            <div class="pt-2">
+                <button type="submit" class="btn-editorial w-full">
+                    Crear cuenta
+                </button>
+            </div>
+        </form>
+
+        <!-- Pie: ir a login -->
+        <p class="font-sans text-sm text-secondary/60 mt-8 text-center">
+            ¿Ya tienes cuenta?
+            <a href="{% url 'login' %}"
+               class="text-primary font-semibold border-b border-primary pb-px hover:text-secondary hover:border-secondary transition-colors duration-200">
+                Inicia sesión
+            </a>
+        </p>
+
+    </div>
+</section>
+{% endblock %}

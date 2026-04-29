@@ -145,13 +145,54 @@
                        max-md:flex-col max-md:items-center max-md:gap-0 max-md:border-b max-md:border-neutral
                        max-md:shadow-sm"
             >
+                <!-- Links principales (siempre visibles) -->
                 <li><a href="{% url 'home' %}" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Inicio</a></li>
                 <li><a href="{% url 'catalogo:lista' %}" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Catálogo</a></li>
                 <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Nosotros</a></li>
                 <li><a href="{% url 'contacto' %}" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">Contacto</a></li>
+
+                <!-- Separador visual (solo desktop) -->
+                <li class="hidden md:block w-px h-4 bg-neutral"></li>
+
+                {% if user.is_authenticated %}
+                    <!-- Usuario autenticado: Mi Cuenta + Cerrar Sesión + Carrito -->
+                    <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">
+                        {{ user.username }}
+                    </a></li>
+                    <li>
+                        <form method="POST" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="block py-4 md:py-0 text-secondary/60 hover:text-primary transition-colors duration-200">
+                                Cerrar Sesión
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="#"
+                           class="flex items-center gap-1 py-4 md:py-0
+                                  font-sans text-xs font-semibold tracking-widest uppercase
+                                  border border-neutral px-3 py-1.5
+                                  hover:border-primary transition-colors duration-200">
+                            Carrito&nbsp;<span class="text-secondary/50">(0)</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <!-- Usuario no autenticado: Iniciar Sesión -->
+                    <li>
+                        <a href="{% url 'login' %}"
+                           class="block py-4 md:py-0 font-semibold text-primary
+                                  border-b-2 border-primary pb-px
+                                  hover:text-secondary hover:border-secondary
+                                  transition-colors duration-200">
+                            Iniciar Sesión
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
     </header>
+
 
     <!-- ── Flash de mensajes (success/error) ── -->
     {% if messages %}

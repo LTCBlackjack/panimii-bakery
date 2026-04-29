@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión — Panimii Bakery{% endblock %}
+{% block meta_description %}Accede a tu cuenta de Paniimi Bakery para gestionar tus pedidos.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .input-auth {
+        @apply w-full bg-surface border border-neutral
+               font-sans text-sm text-primary placeholder-secondary/40
+               px-4 py-3 outline-none transition-colors duration-200
+               focus:border-primary;
+        border-radius: 0;
+    }
+    .input-auth:focus { box-shadow: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="bg-neutral min-h-[calc(100vh-80px)] flex items-center py-section">
+    <div class="w-full max-w-md mx-auto px-container">
+
+        <!-- Cabecera -->
+        <div class="mb-10">
+            <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
+                Tu cuenta
+            </span>
+            <h1 class="font-serif text-4xl font-bold text-primary">
+                Iniciar <span class="italic font-normal">Sesión</span>
+            </h1>
+        </div>
+
+        <!-- Flash de errores no-field -->
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 border border-red-200 px-4 py-3 mb-6">
+            {% for error in form.non_field_errors %}
+            <p class="font-sans text-xs text-red-600">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Formulario -->
+        <form method="POST" action="{% url 'login' %}" novalidate class="space-y-5">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+            <!-- Usuario -->
+            <div>
+                <label for="id_username"
+                       class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                    Usuario
+                </label>
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    placeholder="tu_usuario"
+                    autocomplete="username"
+                    autofocus
+                    class="input-auth {% if form.username.errors %}border-red-400{% endif %}"
+                >
+                {% if form.username.errors %}
+                <p class="font-sans text-xs text-red-500 mt-1">{{ form.username.errors|join:', ' }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Contraseña -->
+            <div>
+                <label for="id_password"
+                       class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                    Contraseña
+                </label>
+                <input
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    class="input-auth {% if form.password.errors %}border-red-400{% endif %}"
+                >
+            </div>
+
+            <!-- Botón -->
+            <div class="pt-2">
+                <button type="submit" class="btn-editorial w-full">
+                    Entrar
+                </button>
+            </div>
+        </form>
+
+        <!-- Pie: ir a registro -->
+        <p class="font-sans text-sm text-secondary/60 mt-8 text-center">
+            ¿Aún no tienes cuenta?
+            <a href="{% url 'registro' %}"
+               class="text-primary font-semibold border-b border-primary pb-px hover:text-secondary hover:border-secondary transition-colors duration-200">
+                Regístrate aquí
+            </a>
+        </p>
+
+    </div>
+</section>
+{% endblock %}

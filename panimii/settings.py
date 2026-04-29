@@ -130,6 +130,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ── Autenticación ────────────────────────────────────────────────────────────
+LOGIN_URL          = '/auth/login/'
+LOGIN_REDIRECT_URL = '/'       # Redirige al home tras login exitoso
+LOGOUT_REDIRECT_URL = '/'      # Redirige al home tras logout
+
+
 
 # ════════════════════════════════════════════════════════════════════════
 # CORREO ELECTRÓNICO — SMTP
