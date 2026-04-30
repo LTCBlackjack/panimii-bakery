@@ -121,17 +121,27 @@
                     <p class="font-sans text-[10px] font-semibold tracking-[.3em] uppercase text-secondary/40 mb-4">
                         Paniimi Rewards
                     </p>
-                    <p class="font-serif italic text-4xl font-normal text-primary mb-1">
-                        {{ puntos_lealtad }}
-                    </p>
-                    <p class="font-sans text-xs text-secondary/50">puntos acumulados</p>
-                    <div class="mt-5 h-px bg-neutral w-full relative">
-                        <div class="absolute top-0 left-0 h-px bg-primary" style="width:0%"></div>
+                    <!-- Stamps — mismos que en la pestaña Lealtad -->
+                    <div class="flex gap-2 flex-wrap mb-4">
+                        {% for i in "123456" %}
+                        <div class="w-8 h-8 border border-primary flex items-center justify-center
+                                    transition-colors duration-200
+                                    {% if forloop.counter <= puntos_lealtad %}bg-primary{% endif %}">
+                            {% if forloop.counter <= puntos_lealtad %}
+                            <span class="text-white text-xs leading-none">✓</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="h-px bg-neutral w-full relative">
+                        <div class="absolute top-0 left-0 h-px bg-primary transition-all duration-500"
+                             style="width: {% widthratio puntos_lealtad 6 100 %}%"></div>
                     </div>
                     <p class="font-sans text-[10px] text-secondary/30 mt-2 tracking-wide">
-                        Próxima galleta gratis a los 100 pts
+                        {{ puntos_lealtad }}/6 — Próxima galleta gratis
                     </p>
                 </div>
+
 
                 <div class="bg-surface border border-neutral/80 p-6 dash-card sm:col-span-2">
                     <p class="font-sans text-[10px] font-semibold tracking-[.3em] uppercase text-secondary/40 mb-4">
