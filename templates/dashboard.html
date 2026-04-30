@@ -2,99 +2,83 @@
 {% load static %}
 
 {% block title %}Mi Cuenta — Panimii Bakery{% endblock %}
-{% block meta_description %}Tu panel de cuenta en Paniimi Bakery: pedidos, puntos de lealtad y perfil.{% endblock %}
 
 {% block extra_head %}
 <style>
-    /* Fade-in suave para las tarjetas del dashboard */
-    .dash-card {
-        opacity: 0;
-        transform: translateY(16px);
-        animation: dashCardIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    .dash-card { opacity:0; transform:translateY(16px);
+        animation:dashIn .5s cubic-bezier(.22,1,.36,1) forwards; }
+    @keyframes dashIn { to { opacity:1; transform:translateY(0); } }
+    .dash-card:nth-child(1){animation-delay:.05s}
+    .dash-card:nth-child(2){animation-delay:.12s}
+    .dash-card:nth-child(3){animation-delay:.19s}
+    .dash-card:nth-child(4){animation-delay:.26s}
+    .dash-card:nth-child(5){animation-delay:.33s}
+
+    /* Sidebar links */
+    .nav-link {
+        display:flex; align-items:center; gap:12px;
+        padding:10px 12px;
+        font-family:'Inter',sans-serif; font-size:10px;
+        font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+        color:rgba(255,255,255,.35);
+        transition:color .2s, background .2s;
     }
-    @keyframes dashCardIn {
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .dash-card:nth-child(1) { animation-delay: 0.05s; }
-    .dash-card:nth-child(2) { animation-delay: 0.12s; }
-    .dash-card:nth-child(3) { animation-delay: 0.19s; }
-    .dash-card:nth-child(4) { animation-delay: 0.26s; }
-    .dash-card:nth-child(5) { animation-delay: 0.33s; }
+    .nav-link .dot { width:6px; height:6px; border-radius:50%;
+        background:rgba(255,255,255,.2); flex-shrink:0; }
+    .nav-link.active { color:#fff; background:rgba(255,255,255,.1); }
+    .nav-link.active .dot { background:#fff; }
+    .nav-link:hover:not(.active) { color:rgba(255,255,255,.7); }
+
+    /* Cookie stamps for lealtad */
+    .stamp { width:44px; height:44px; border:2px solid #000;
+        border-radius:0; display:flex; align-items:center; justify-content:center;
+        font-size:20px; transition:background .2s; }
+    .stamp.filled { background:#000; }
 </style>
 {% endblock %}
 
 {% block content %}
-
-<!-- ════════════════════════════════════════════════════════════════
-     DASHBOARD — Layout 2 columnas
-     Sidebar negro (primary) izquierda · Contenido neutro derecha
-     ════════════════════════════════════════════════════════════ -->
 <div class="flex min-h-[calc(100vh-73px)]">
 
     <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
     <aside class="hidden lg:flex flex-col w-60 xl:w-64 flex-shrink-0 bg-primary">
 
-        <!-- Iniciales del usuario -->
+        <!-- Iniciales -->
         <div class="px-6 pt-10 pb-8 border-b border-white/10">
-            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-4">
+            <div class="w-12 h-12 bg-white/10 flex items-center justify-center mb-4">
                 <span class="font-serif text-lg font-bold text-white uppercase">
                     {{ user.username|slice:":1" }}
                 </span>
             </div>
-            <p class="font-sans text-xs font-semibold tracking-widest uppercase text-white/40 mb-1">
-                Cliente
-            </p>
+            <p class="font-sans text-[10px] font-semibold tracking-widest uppercase text-white/40 mb-1">Cliente</p>
             <p class="font-serif text-base font-bold text-white leading-tight">
                 {{ user.get_full_name|default:user.username }}
             </p>
         </div>
 
-        <!-- Navegación del panel -->
-        <nav class="flex-1 px-4 py-6 space-y-1">
-
-            <a href="{% url 'dashboard' %}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-none
-                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
-                      text-white bg-white/10">
-                <span class="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
-                Dashboard
+        <!-- Navegación -->
+        <nav class="flex-1 px-4 py-6 space-y-1" id="sidebar-nav">
+            <a href="#" data-tab="dashboard" class="nav-link active">
+                <span class="dot"></span>Dashboard
             </a>
-
-            <a href="#pedidos"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-none
-                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
-                      text-white/40 hover:text-white hover:bg-white/5
-                      transition-colors duration-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-white/20 inline-block"></span>
-                Mis Compras
+            <a href="#" data-tab="pedidos" class="nav-link">
+                <span class="dot"></span>Mis Compras
             </a>
-
-            <a href="#lealtad"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-none
-                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
-                      text-white/40 hover:text-white hover:bg-white/5
-                      transition-colors duration-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-white/20 inline-block"></span>
-                Lealtad
+            <a href="#" data-tab="lealtad" class="nav-link">
+                <span class="dot"></span>Lealtad
             </a>
-
-            <a href="#perfil"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-none
-                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
-                      text-white/40 hover:text-white hover:bg-white/5
-                      transition-colors duration-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-white/20 inline-block"></span>
-                Perfil
+            <a href="#" data-tab="perfil" class="nav-link">
+                <span class="dot"></span>Perfil
             </a>
         </nav>
 
-        <!-- Pie del sidebar: Cerrar Sesión -->
+        <!-- Cerrar sesión -->
         <div class="px-4 py-6 border-t border-white/10">
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit"
                         class="w-full text-left font-sans text-[10px] font-semibold
-                               tracking-[0.25em] uppercase text-white/30
+                               tracking-[.25em] uppercase text-white/30
                                hover:text-white transition-colors duration-200 px-3 py-2">
                     Cerrar Sesión
                 </button>
@@ -103,197 +87,369 @@
     </aside>
 
 
-    <!-- ══ CONTENIDO PRINCIPAL ═══════════════════════════════════ -->
+    <!-- ══ ÁREA DE PANELES ══════════════════════════════════════ -->
     <main class="flex-1 bg-neutral overflow-y-auto">
-        <div class="max-w-4xl mx-auto px-6 lg:px-10 py-10">
 
-            <!-- ── Cabecera de bienvenida ──────────────────────────── -->
+        <!-- ────────────────────────────────────────────────────
+             PANEL: DASHBOARD (resumen)
+             ─────────────────────────────────────────────────── -->
+        <div id="tab-dashboard" class="tab-panel max-w-4xl mx-auto px-6 lg:px-10 py-10">
+
+            <!-- Cabecera -->
             <div class="mb-10 dash-card">
-                <p class="font-sans text-xs font-semibold tracking-[0.3em] uppercase
-                          text-secondary/40 mb-2">
+                <p class="font-sans text-xs font-semibold tracking-[.3em] uppercase text-secondary/40 mb-2">
                     Mérida · Yucatán
                 </p>
                 <div class="flex items-start justify-between">
                     <div>
-                        <h1 class="font-serif italic text-5xl lg:text-6xl font-normal
-                                   text-primary leading-none mb-3">
+                        <h1 class="font-serif italic text-5xl lg:text-6xl font-normal text-primary leading-none mb-3">
                             Hola, {{ user.get_full_name|default:user.username }}.
                         </h1>
                         <p class="font-serif italic text-base text-secondary/60">
                             "Hoy es un buen día para una galleta."
                         </p>
                     </div>
-                    <!-- Osito decorativo -->
-                    <img src="{% static 'img/oso_comiendo_galleta.webp' %}"
-                         alt=""
+                    <img src="{% static 'img/oso_comiendo_galleta.webp' %}" alt=""
                          class="hidden md:block w-20 h-20 object-contain opacity-70 flex-shrink-0">
                 </div>
             </div>
 
-
-            <!-- ── Fila de tarjetas de estadísticas ───────────────── -->
+            <!-- Tarjetas de estadísticas -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
 
-                <!-- Tarjeta: Puntos de Lealtad -->
-                <div id="lealtad"
-                     class="bg-surface border border-neutral/80 p-6 dash-card">
-                    <p class="font-sans text-[10px] font-semibold tracking-[0.3em]
-                              uppercase text-secondary/40 mb-4">
+                <div class="bg-surface border border-neutral/80 p-6 dash-card">
+                    <p class="font-sans text-[10px] font-semibold tracking-[.3em] uppercase text-secondary/40 mb-4">
                         Paniimi Rewards
                     </p>
                     <p class="font-serif italic text-4xl font-normal text-primary mb-1">
                         {{ puntos_lealtad }}
                     </p>
                     <p class="font-sans text-xs text-secondary/50">puntos acumulados</p>
-                    <!-- Barra de progreso editorial -->
                     <div class="mt-5 h-px bg-neutral w-full relative">
-                        <div class="absolute top-0 left-0 h-px bg-primary"
-                             style="width: {% if puntos_lealtad > 0 %}{{ puntos_lealtad|floatformat:0 }}{% else %}0{% endif %}%"></div>
+                        <div class="absolute top-0 left-0 h-px bg-primary" style="width:0%"></div>
                     </div>
                     <p class="font-sans text-[10px] text-secondary/30 mt-2 tracking-wide">
                         Próxima galleta gratis a los 100 pts
                     </p>
                 </div>
 
-                <!-- Tarjeta: Perfil -->
-                <div id="perfil"
-                     class="bg-surface border border-neutral/80 p-6 dash-card sm:col-span-2">
-                    <p class="font-sans text-[10px] font-semibold tracking-[0.3em]
-                              uppercase text-secondary/40 mb-4">
+                <div class="bg-surface border border-neutral/80 p-6 dash-card sm:col-span-2">
+                    <p class="font-sans text-[10px] font-semibold tracking-[.3em] uppercase text-secondary/40 mb-4">
                         Información de Perfil
                     </p>
                     <dl class="space-y-3">
                         <div>
-                            <dt class="font-sans text-[10px] tracking-widest uppercase
-                                       text-secondary/40">Usuario</dt>
-                            <dd class="font-sans text-sm font-semibold text-primary mt-0.5">
-                                {{ user.username }}
-                            </dd>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">Usuario</dt>
+                            <dd class="font-sans text-sm font-semibold text-primary mt-0.5">{{ user.username }}</dd>
                         </div>
                         <div>
-                            <dt class="font-sans text-[10px] tracking-widest uppercase
-                                       text-secondary/40">Correo</dt>
-                            <dd class="font-sans text-sm text-secondary mt-0.5">
-                                {{ user.email|default:"— Sin correo registrado —" }}
-                            </dd>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">Correo</dt>
+                            <dd class="font-sans text-sm text-secondary mt-0.5">{{ user.email|default:"— Sin correo —" }}</dd>
                         </div>
                         <div>
-                            <dt class="font-sans text-[10px] tracking-widest uppercase
-                                       text-secondary/40">Miembro desde</dt>
-                            <dd class="font-sans text-sm text-secondary mt-0.5">
-                                {{ user.date_joined|date:"d \d\e F, Y" }}
-                            </dd>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">Miembro desde</dt>
+                            <dd class="font-sans text-sm text-secondary mt-0.5">{{ user.date_joined|date:"d \d\e F, Y" }}</dd>
                         </div>
                     </dl>
                 </div>
             </div>
 
-
-            <!-- ── Historial de Pedidos ────────────────────────────── -->
-            <div id="pedidos" class="mb-12 dash-card">
-                <div class="flex items-baseline justify-between mb-6">
-                    <h2 class="font-serif text-2xl font-bold text-primary">
-                        Historial de Pedidos
-                    </h2>
-                    <span class="font-sans text-xs text-secondary/40 tracking-wide">
-                        {{ pedidos|length }} pedido{% if pedidos|length != 1 %}s{% endif %}
-                    </span>
-                </div>
-
-                {% if pedidos %}
-                <!-- Tabla de pedidos (cuando haya datos) -->
-                <div class="bg-surface border border-neutral/80 divide-y divide-neutral">
-                    {% for pedido in pedidos %}
-                    <div class="flex items-center justify-between px-6 py-4">
-                        <div>
-                            <p class="font-sans text-sm font-semibold text-primary">#{{ pedido.numero }}</p>
-                            <p class="font-sans text-xs text-secondary/50">{{ pedido.fecha|date:"d M Y" }}</p>
-                        </div>
-                        <span class="font-sans text-sm text-secondary">${{ pedido.total }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                {% else %}
-                <!-- Empty State editorial -->
-                <div class="bg-surface border border-neutral/80 py-16 px-8 text-center">
-                    <img src="{% static 'img/oso_envio.webp' %}"
-                         alt=""
-                         class="w-24 h-24 object-contain mx-auto mb-6 opacity-50">
-                    <p class="font-serif italic text-2xl text-primary/60 mb-2">
-                        "Aún no hay pedidos."
-                    </p>
-                    <p class="font-sans text-sm text-secondary/50 mb-8">
-                        Tu historial aparecerá aquí cuando hagas tu primer pedido.
-                    </p>
-                    <a href="{% url 'catalogo:lista' %}"
-                       class="inline-block bg-primary text-white font-sans text-xs
-                              font-semibold tracking-[0.25em] uppercase px-8 py-3
-                              hover:opacity-80 transition-opacity duration-200">
-                        Ver Catálogo
-                    </a>
-                </div>
-                {% endif %}
-            </div>
-
-
-            <!-- ── Sugeridos para ti (productos reales del catálogo) ─ -->
+            <!-- Sugeridos -->
             {% if sugeridos %}
             <div class="dash-card">
                 <div class="flex items-baseline justify-between mb-6">
-                    <h2 class="font-serif italic text-2xl font-normal text-primary">
-                        Sugeridos para ti
-                    </h2>
+                    <h2 class="font-serif italic text-2xl font-normal text-primary">Sugeridos para ti</h2>
                     <a href="{% url 'catalogo:lista' %}"
-                       class="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase
+                       class="font-sans text-[10px] font-semibold tracking-[.2em] uppercase
                               text-secondary/40 hover:text-primary border-b border-transparent
                               hover:border-primary transition-all duration-200">
                         Ver catálogo completo
                     </a>
                 </div>
-
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    {% for producto in sugeridos %}
+                    {% for p in sugeridos %}
                     <a href="{% url 'catalogo:lista' %}"
-                       class="group bg-surface border border-neutral/80
-                              hover:border-primary transition-colors duration-300 block">
-                        <!-- Imagen -->
+                       class="group bg-surface border border-neutral/80 hover:border-primary transition-colors duration-300 block">
                         <div class="overflow-hidden aspect-square">
-                            {% if producto.imagen %}
-                            <img src="{{ producto.imagen.url }}"
-                                 alt="{{ producto.nombre }}"
-                                 class="w-full h-full object-cover
-                                        transition-transform duration-500 group-hover:scale-105">
+                            {% if p.imagen %}
+                            <img src="{{ p.imagen.url }}" alt="{{ p.nombre }}"
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                             {% else %}
                             <div class="w-full h-full bg-neutral flex items-center justify-center">
-                                <img src="{% static 'img/oso_comiendo_galleta.webp' %}"
-                                     alt=""
+                                <img src="{% static 'img/oso_comiendo_galleta.webp' %}" alt=""
                                      class="w-16 h-16 object-contain opacity-30">
                             </div>
                             {% endif %}
                         </div>
-                        <!-- Info -->
                         <div class="p-4">
-                            <p class="font-serif text-sm font-bold text-primary leading-tight mb-1 truncate">
-                                {{ producto.nombre }}
-                            </p>
-                            <p class="font-sans text-xs text-secondary/50">
-                                {{ producto.categoria.nombre }}
-                            </p>
-                            {% if producto.precio %}
-                            <p class="font-sans text-sm font-semibold text-primary mt-2">
-                                ${{ producto.precio }}
-                            </p>
-                            {% endif %}
+                            <p class="font-serif text-sm font-bold text-primary truncate mb-1">{{ p.nombre }}</p>
+                            <p class="font-sans text-xs text-secondary/50">{{ p.categoria.nombre }}</p>
+                            {% if p.precio %}<p class="font-sans text-sm font-semibold text-primary mt-2">${{ p.precio }}</p>{% endif %}
                         </div>
                     </a>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
-
         </div>
+
+
+        <!-- ────────────────────────────────────────────────────
+             PANEL: PEDIDOS (Mis Compras)
+             ─────────────────────────────────────────────────── -->
+        <div id="tab-pedidos" class="tab-panel hidden max-w-4xl mx-auto px-6 lg:px-10 py-10">
+
+            <div class="mb-10">
+                <p class="font-sans text-xs font-semibold tracking-[.3em] uppercase text-secondary/40 mb-2">
+                    Logística Yucatán
+                </p>
+                <div class="flex items-start justify-between">
+                    <h1 class="font-serif italic text-5xl lg:text-6xl font-normal text-primary leading-none">
+                        Mis Pedidos
+                    </h1>
+                    <img src="{% static 'img/oso_envio.webp' %}" alt=""
+                         class="hidden md:block w-20 h-20 object-contain opacity-70">
+                </div>
+            </div>
+
+            {% if pedidos %}
+            <!-- Tabla de pedidos -->
+            <div class="bg-surface border border-neutral/80">
+                <div class="grid grid-cols-5 gap-4 px-6 py-3 border-b border-neutral">
+                    <span class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">ID Pedido</span>
+                    <span class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">Fecha</span>
+                    <span class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">Productos</span>
+                    <span class="font-sans text-[10px] tracking-widest uppercase text-secondary/40">Total</span>
+                    <span class="font-sans text-[10px] tracking-widest uppercase text-secondary/40 text-right">Estatus</span>
+                </div>
+                {% for pedido in pedidos %}
+                <div class="grid grid-cols-5 gap-4 px-6 py-5 border-b border-neutral last:border-0 items-center">
+                    <p class="font-sans text-sm font-semibold text-primary">#{{ pedido.numero }}</p>
+                    <p class="font-sans text-sm text-secondary">{{ pedido.fecha|date:"d M, Y" }}</p>
+                    <p class="font-serif italic text-sm text-primary">{{ pedido.descripcion }}</p>
+                    <p class="font-sans text-sm font-semibold text-primary">${{ pedido.total }}</p>
+                    <div class="text-right">
+                        <span class="font-sans text-[10px] font-semibold tracking-widest uppercase
+                                     bg-neutral px-2 py-1 text-secondary/60">
+                            {{ pedido.estatus }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="bg-surface border border-neutral/80 py-20 px-8 text-center">
+                <img src="{% static 'img/oso_envio.webp' %}" alt=""
+                     class="w-24 h-24 object-contain mx-auto mb-6 opacity-40">
+                <p class="font-serif italic text-2xl text-primary/60 mb-2">"Aún no hay pedidos."</p>
+                <p class="font-sans text-sm text-secondary/50 mb-8">
+                    Tu historial aparecerá aquí cuando hagas tu primer pedido.
+                </p>
+                <a href="{% url 'catalogo:lista' %}"
+                   class="inline-block bg-primary text-white font-sans text-xs
+                          font-semibold tracking-[.25em] uppercase px-8 py-3
+                          hover:opacity-80 transition-opacity duration-200">
+                    Ver Catálogo
+                </a>
+            </div>
+            <p class="font-serif italic text-center text-secondary/30 mt-10 text-sm">
+                "Cada galleta cuenta una historia."
+            </p>
+            {% endif %}
+        </div>
+
+
+        <!-- ────────────────────────────────────────────────────
+             PANEL: LEALTAD (Paniimi Rewards)
+             ─────────────────────────────────────────────────── -->
+        <div id="tab-lealtad" class="tab-panel hidden max-w-4xl mx-auto px-6 lg:px-10 py-10">
+
+            <div class="mb-10">
+                <p class="font-sans text-xs font-semibold tracking-[.3em] uppercase text-secondary/40 mb-2">
+                    Programa de Recompensas
+                </p>
+                <div class="flex items-start justify-between">
+                    <h1 class="font-serif italic text-5xl lg:text-6xl font-normal text-primary leading-none">
+                        Paniimi Rewards
+                    </h1>
+                    <img src="{% static 'img/oso_abrazando_galleta.webp' %}" alt=""
+                         class="hidden md:block w-20 h-20 object-contain opacity-70">
+                </div>
+            </div>
+
+            <!-- Tarjeta de progreso -->
+            <div class="bg-surface border border-neutral/80 p-8 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="font-serif italic text-3xl text-primary mb-4 leading-tight">
+                            Tu Colección de Dulzura
+                        </h2>
+                        <p class="font-sans text-sm text-secondary/70 leading-relaxed mb-6">
+                            Por cada 6 galletas adquiridas, la séptima es un regalo de nuestro laboratorio.
+                            Acumula puntos con cada compra.
+                        </p>
+                        <!-- Stamps de progreso -->
+                        <div class="flex gap-3 flex-wrap">
+                            {% for i in "123456" %}
+                            <div class="stamp {% if forloop.counter <= puntos_lealtad %}filled{% endif %}">
+                                {% if forloop.counter <= puntos_lealtad %}
+                                <span class="text-white text-lg">🍪</span>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <p class="font-sans text-xs text-secondary/40 mt-4 tracking-wide">
+                            {{ puntos_lealtad }}/6 galletas acumuladas
+                        </p>
+                    </div>
+                    <!-- Imagen -->
+                    <div class="relative">
+                        <div class="overflow-hidden aspect-square max-w-[220px] mx-auto">
+                            <img src="{% static 'img/oso_acostado.webp' %}" alt=""
+                                 class="w-full h-full object-cover"
+                                 style="mix-blend-mode:multiply; filter:grayscale(30%)">
+                        </div>
+                        <div class="absolute bottom-0 right-0 bg-primary text-white px-4 py-3 max-w-[160px]">
+                            <p class="font-serif italic text-sm leading-snug">
+                                "Faltan {{ 6|add:"-"|add:puntos_lealtad }} para el premio"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cupones -->
+            <h2 class="font-serif italic text-2xl text-primary mb-5">Tus Cupones</h2>
+            <div class="bg-surface border border-neutral/80 py-12 text-center">
+                <p class="font-serif italic text-xl text-secondary/40 mb-2">"Sin cupones disponibles."</p>
+                <p class="font-sans text-xs text-secondary/30">
+                    Completa tu colección para desbloquear recompensas exclusivas.
+                </p>
+            </div>
+        </div>
+
+
+        <!-- ────────────────────────────────────────────────────
+             PANEL: PERFIL
+             ─────────────────────────────────────────────────── -->
+        <div id="tab-perfil" class="tab-panel hidden max-w-2xl mx-auto px-6 lg:px-10 py-10">
+
+            <div class="mb-10">
+                <p class="font-sans text-xs font-semibold tracking-[.3em] uppercase text-secondary/40 mb-2">
+                    Tu Cuenta
+                </p>
+                <h1 class="font-serif italic text-5xl font-normal text-primary leading-none">
+                    Perfil
+                </h1>
+            </div>
+
+            <!-- Tarjeta de info -->
+            <div class="bg-surface border border-neutral/80 p-8 mb-6">
+                <div class="flex items-center gap-6 mb-8 pb-8 border-b border-neutral">
+                    <div class="w-16 h-16 bg-primary flex items-center justify-center flex-shrink-0">
+                        <span class="font-serif text-2xl font-bold text-white uppercase">
+                            {{ user.username|slice:":1" }}
+                        </span>
+                    </div>
+                    <div>
+                        <p class="font-serif text-xl font-bold text-primary">
+                            {{ user.get_full_name|default:user.username }}
+                        </p>
+                        <p class="font-sans text-sm text-secondary/50">{{ user.email|default:"Sin correo registrado" }}</p>
+                    </div>
+                </div>
+
+                <dl class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40 mb-1">
+                                Nombre de usuario
+                            </dt>
+                            <dd class="font-sans text-sm font-semibold text-primary">{{ user.username }}</dd>
+                        </div>
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40 mb-1">
+                                Correo electrónico
+                            </dt>
+                            <dd class="font-sans text-sm text-secondary">{{ user.email|default:"—" }}</dd>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40 mb-1">
+                                Miembro desde
+                            </dt>
+                            <dd class="font-sans text-sm text-secondary">{{ user.date_joined|date:"d \d\e F, Y" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase text-secondary/40 mb-1">
+                                Último acceso
+                            </dt>
+                            <dd class="font-sans text-sm text-secondary">{{ user.last_login|date:"d \d\e F, Y"|default:"—" }}</dd>
+                        </div>
+                    </div>
+                </dl>
+            </div>
+
+            <!-- Acciones de cuenta -->
+            <div class="bg-surface border border-neutral/80 p-8">
+                <h3 class="font-sans text-[10px] font-semibold tracking-[.3em] uppercase text-secondary/40 mb-5">
+                    Seguridad
+                </h3>
+                <p class="font-sans text-sm text-secondary/60 mb-6 leading-relaxed">
+                    Para cambiar tu contraseña o actualizar tu información, utiliza el panel de administración
+                    o contáctanos directamente.
+                </p>
+                <a href="{% url 'contacto' %}"
+                   class="inline-block bg-primary text-white font-sans text-xs font-semibold
+                          tracking-[.25em] uppercase px-8 py-3
+                          hover:opacity-80 transition-opacity duration-200">
+                    Contactar soporte
+                </a>
+            </div>
+        </div>
+
     </main>
 </div>
 
+
+<!-- ══ SCRIPT: Sistema de Pestañas ══════════════════════════════ -->
+<script>
+(function () {
+    var links  = document.querySelectorAll('[data-tab]');
+    var panels = document.querySelectorAll('.tab-panel');
+
+    function activate(tabId) {
+        // 1. Oculta todos los paneles
+        panels.forEach(function (p) { p.classList.add('hidden'); });
+
+        // 2. Muestra el panel solicitado
+        var target = document.getElementById('tab-' + tabId);
+        if (target) target.classList.remove('hidden');
+
+        // 3. Actualiza estado activo en el sidebar
+        links.forEach(function (link) {
+            var isActive = link.dataset.tab === tabId;
+            link.classList.toggle('active', isActive);
+        });
+
+        // 4. Guarda en sessionStorage para conservar pestaña al recargar
+        sessionStorage.setItem('dash-tab', tabId);
+    }
+
+    // Registra listeners
+    links.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            activate(this.dataset.tab);
+        });
+    });
+
+    // Restaura pestaña guardada o muestra 'dashboard' por defecto
+    var saved = sessionStorage.getItem('dash-tab') || 'dashboard';
+    activate(saved);
+})();
+</script>
 {% endblock %}
