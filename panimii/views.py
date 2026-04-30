@@ -3,9 +3,11 @@ import logging
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 
+from catalogo.models import Producto
 from .forms import ContactoForm, RegistroForm
 
 logger = logging.getLogger(__name__)
@@ -78,3 +80,28 @@ def registro(request):
         form = RegistroForm()
 
     return render(request, 'registro.html', {'form': form})
+
+
+@login_required
+def dashboard(request):
+    """
+    Panel principal del usuario autenticado.
+
+    Muestra información de perfil, puntos de lealtad (placeholder),
+    historial de pedidos (empty state por ahora) y productos sugeridos
+    del catálogo real.
+    """
+    # Productos destacados o los 4 más recientes para "Sugeridos para ti"
+    sugeridos = (
+        Producto.objects
+        .filter(disponible=True)
+        .select_related('categoria')
+        .order_by('-destacado', '-creado')[:4]
+    )
+
+    ctx = {
+        'sugeridos':     sugeridos,
+        'puntos_lealtad': 0,       # TODO: vincular a modelo Lealtad en Fase 3
+        'pedidos':        [],      # TODO: vincular a modelo Pedido en Fase 3
+    }
+    return render(request, 'dashboard.html', ctx)

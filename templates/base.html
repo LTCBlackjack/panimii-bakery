@@ -156,9 +156,10 @@
 
                 {% if user.is_authenticated %}
                     <!-- Usuario autenticado: Mi Cuenta + Cerrar Sesión + Carrito -->
-                    <li><a href="#" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">
+                    <li><a href="{% url 'dashboard' %}" class="block py-4 md:py-0 hover:text-primary transition-colors duration-200">
                         {{ user.username }}
                     </a></li>
+
                     <li>
                         <form method="POST" action="{% url 'logout' %}" class="inline">
                             {% csrf_token %}

@@ -15,6 +15,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('catalogo/', include('catalogo.urls', namespace='catalogo')),
     path('contacto/', project_views.contacto, name='contacto'),
+    path('mi-cuenta/', project_views.dashboard, name='dashboard'),
+
 
     # ── Autenticación ────────────────────────────────────────────
     path('auth/login/', auth_views.LoginView.as_view(

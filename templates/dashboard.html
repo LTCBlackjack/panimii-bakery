@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mi Cuenta — Panimii Bakery{% endblock %}
+{% block meta_description %}Tu panel de cuenta en Paniimi Bakery: pedidos, puntos de lealtad y perfil.{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Fade-in suave para las tarjetas del dashboard */
+    .dash-card {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: dashCardIn 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    @keyframes dashCardIn {
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .dash-card:nth-child(1) { animation-delay: 0.05s; }
+    .dash-card:nth-child(2) { animation-delay: 0.12s; }
+    .dash-card:nth-child(3) { animation-delay: 0.19s; }
+    .dash-card:nth-child(4) { animation-delay: 0.26s; }
+    .dash-card:nth-child(5) { animation-delay: 0.33s; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ════════════════════════════════════════════════════════════════
+     DASHBOARD — Layout 2 columnas
+     Sidebar negro (primary) izquierda · Contenido neutro derecha
+     ════════════════════════════════════════════════════════════ -->
+<div class="flex min-h-[calc(100vh-73px)]">
+
+    <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+    <aside class="hidden lg:flex flex-col w-60 xl:w-64 flex-shrink-0 bg-primary">
+
+        <!-- Iniciales del usuario -->
+        <div class="px-6 pt-10 pb-8 border-b border-white/10">
+            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-4">
+                <span class="font-serif text-lg font-bold text-white uppercase">
+                    {{ user.username|slice:":1" }}
+                </span>
+            </div>
+            <p class="font-sans text-xs font-semibold tracking-widest uppercase text-white/40 mb-1">
+                Cliente
+            </p>
+            <p class="font-serif text-base font-bold text-white leading-tight">
+                {{ user.get_full_name|default:user.username }}
+            </p>
+        </div>
+
+        <!-- Navegación del panel -->
+        <nav class="flex-1 px-4 py-6 space-y-1">
+
+            <a href="{% url 'dashboard' %}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-none
+                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
+                      text-white bg-white/10">
+                <span class="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
+                Dashboard
+            </a>
+
+            <a href="#pedidos"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-none
+                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
+                      text-white/40 hover:text-white hover:bg-white/5
+                      transition-colors duration-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-white/20 inline-block"></span>
+                Mis Compras
+            </a>
+
+            <a href="#lealtad"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-none
+                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
+                      text-white/40 hover:text-white hover:bg-white/5
+                      transition-colors duration-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-white/20 inline-block"></span>
+                Lealtad
+            </a>
+
+            <a href="#perfil"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-none
+                      font-sans text-xs font-semibold tracking-[0.2em] uppercase
+                      text-white/40 hover:text-white hover:bg-white/5
+                      transition-colors duration-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-white/20 inline-block"></span>
+                Perfil
+            </a>
+        </nav>
+
+        <!-- Pie del sidebar: Cerrar Sesión -->
+        <div class="px-4 py-6 border-t border-white/10">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit"
+                        class="w-full text-left font-sans text-[10px] font-semibold
+                               tracking-[0.25em] uppercase text-white/30
+                               hover:text-white transition-colors duration-200 px-3 py-2">
+                    Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </aside>
+
+
+    <!-- ══ CONTENIDO PRINCIPAL ═══════════════════════════════════ -->
+    <main class="flex-1 bg-neutral overflow-y-auto">
+        <div class="max-w-4xl mx-auto px-6 lg:px-10 py-10">
+
+            <!-- ── Cabecera de bienvenida ──────────────────────────── -->
+            <div class="mb-10 dash-card">
+                <p class="font-sans text-xs font-semibold tracking-[0.3em] uppercase
+                          text-secondary/40 mb-2">
+                    Mérida · Yucatán
+                </p>
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h1 class="font-serif italic text-5xl lg:text-6xl font-normal
+                                   text-primary leading-none mb-3">
+                            Hola, {{ user.get_full_name|default:user.username }}.
+                        </h1>
+                        <p class="font-serif italic text-base text-secondary/60">
+                            "Hoy es un buen día para una galleta."
+                        </p>
+                    </div>
+                    <!-- Osito decorativo -->
+                    <img src="{% static 'img/oso_comiendo_galleta.webp' %}"
+                         alt=""
+                         class="hidden md:block w-20 h-20 object-contain opacity-70 flex-shrink-0">
+                </div>
+            </div>
+
+
+            <!-- ── Fila de tarjetas de estadísticas ───────────────── -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+
+                <!-- Tarjeta: Puntos de Lealtad -->
+                <div id="lealtad"
+                     class="bg-surface border border-neutral/80 p-6 dash-card">
+                    <p class="font-sans text-[10px] font-semibold tracking-[0.3em]
+                              uppercase text-secondary/40 mb-4">
+                        Paniimi Rewards
+                    </p>
+                    <p class="font-serif italic text-4xl font-normal text-primary mb-1">
+                        {{ puntos_lealtad }}
+                    </p>
+                    <p class="font-sans text-xs text-secondary/50">puntos acumulados</p>
+                    <!-- Barra de progreso editorial -->
+                    <div class="mt-5 h-px bg-neutral w-full relative">
+                        <div class="absolute top-0 left-0 h-px bg-primary"
+                             style="width: {% if puntos_lealtad > 0 %}{{ puntos_lealtad|floatformat:0 }}{% else %}0{% endif %}%"></div>
+                    </div>
+                    <p class="font-sans text-[10px] text-secondary/30 mt-2 tracking-wide">
+                        Próxima galleta gratis a los 100 pts
+                    </p>
+                </div>
+
+                <!-- Tarjeta: Perfil -->
+                <div id="perfil"
+                     class="bg-surface border border-neutral/80 p-6 dash-card sm:col-span-2">
+                    <p class="font-sans text-[10px] font-semibold tracking-[0.3em]
+                              uppercase text-secondary/40 mb-4">
+                        Información de Perfil
+                    </p>
+                    <dl class="space-y-3">
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase
+                                       text-secondary/40">Usuario</dt>
+                            <dd class="font-sans text-sm font-semibold text-primary mt-0.5">
+                                {{ user.username }}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase
+                                       text-secondary/40">Correo</dt>
+                            <dd class="font-sans text-sm text-secondary mt-0.5">
+                                {{ user.email|default:"— Sin correo registrado —" }}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="font-sans text-[10px] tracking-widest uppercase
+                                       text-secondary/40">Miembro desde</dt>
+                            <dd class="font-sans text-sm text-secondary mt-0.5">
+                                {{ user.date_joined|date:"d \d\e F, Y" }}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+
+            <!-- ── Historial de Pedidos ────────────────────────────── -->
+            <div id="pedidos" class="mb-12 dash-card">
+                <div class="flex items-baseline justify-between mb-6">
+                    <h2 class="font-serif text-2xl font-bold text-primary">
+                        Historial de Pedidos
+                    </h2>
+                    <span class="font-sans text-xs text-secondary/40 tracking-wide">
+                        {{ pedidos|length }} pedido{% if pedidos|length != 1 %}s{% endif %}
+                    </span>
+                </div>
+
+                {% if pedidos %}
+                <!-- Tabla de pedidos (cuando haya datos) -->
+                <div class="bg-surface border border-neutral/80 divide-y divide-neutral">
+                    {% for pedido in pedidos %}
+                    <div class="flex items-center justify-between px-6 py-4">
+                        <div>
+                            <p class="font-sans text-sm font-semibold text-primary">#{{ pedido.numero }}</p>
+                            <p class="font-sans text-xs text-secondary/50">{{ pedido.fecha|date:"d M Y" }}</p>
+                        </div>
+                        <span class="font-sans text-sm text-secondary">${{ pedido.total }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- Empty State editorial -->
+                <div class="bg-surface border border-neutral/80 py-16 px-8 text-center">
+                    <img src="{% static 'img/oso_envio.webp' %}"
+                         alt=""
+                         class="w-24 h-24 object-contain mx-auto mb-6 opacity-50">
+                    <p class="font-serif italic text-2xl text-primary/60 mb-2">
+                        "Aún no hay pedidos."
+                    </p>
+                    <p class="font-sans text-sm text-secondary/50 mb-8">
+                        Tu historial aparecerá aquí cuando hagas tu primer pedido.
+                    </p>
+                    <a href="{% url 'catalogo:lista' %}"
+                       class="inline-block bg-primary text-white font-sans text-xs
+                              font-semibold tracking-[0.25em] uppercase px-8 py-3
+                              hover:opacity-80 transition-opacity duration-200">
+                        Ver Catálogo
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <!-- ── Sugeridos para ti (productos reales del catálogo) ─ -->
+            {% if sugeridos %}
+            <div class="dash-card">
+                <div class="flex items-baseline justify-between mb-6">
+                    <h2 class="font-serif italic text-2xl font-normal text-primary">
+                        Sugeridos para ti
+                    </h2>
+                    <a href="{% url 'catalogo:lista' %}"
+                       class="font-sans text-[10px] font-semibold tracking-[0.2em] uppercase
+                              text-secondary/40 hover:text-primary border-b border-transparent
+                              hover:border-primary transition-all duration-200">
+                        Ver catálogo completo
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {% for producto in sugeridos %}
+                    <a href="{% url 'catalogo:lista' %}"
+                       class="group bg-surface border border-neutral/80
+                              hover:border-primary transition-colors duration-300 block">
+                        <!-- Imagen -->
+                        <div class="overflow-hidden aspect-square">
+                            {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}"
+                                 alt="{{ producto.nombre }}"
+                                 class="w-full h-full object-cover
+                                        transition-transform duration-500 group-hover:scale-105">
+                            {% else %}
+                            <div class="w-full h-full bg-neutral flex items-center justify-center">
+                                <img src="{% static 'img/oso_comiendo_galleta.webp' %}"
+                                     alt=""
+                                     class="w-16 h-16 object-contain opacity-30">
+                            </div>
+                            {% endif %}
+                        </div>
+                        <!-- Info -->
+                        <div class="p-4">
+                            <p class="font-serif text-sm font-bold text-primary leading-tight mb-1 truncate">
+                                {{ producto.nombre }}
+                            </p>
+                            <p class="font-sans text-xs text-secondary/50">
+                                {{ producto.categoria.nombre }}
+                            </p>
+                            {% if producto.precio %}
+                            <p class="font-sans text-sm font-semibold text-primary mt-2">
+                                ${{ producto.precio }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </main>
+</div>
+
+{% endblock %}
