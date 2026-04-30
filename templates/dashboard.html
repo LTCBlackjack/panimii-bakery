@@ -266,67 +266,83 @@
              ─────────────────────────────────────────────────── -->
         <div id="tab-lealtad" class="tab-panel hidden max-w-4xl mx-auto px-6 lg:px-10 py-10">
 
-            <div class="mb-10">
-                <p class="font-sans text-xs font-semibold tracking-[.3em] uppercase text-secondary/40 mb-2">
-                    Programa de Recompensas
-                </p>
-                <div class="flex items-start justify-between">
-                    <h1 class="font-serif italic text-5xl lg:text-6xl font-normal text-primary leading-none">
+            <!-- Cabecera — mismo peso visual que "Historial de Pedidos" -->
+            <div class="flex items-baseline justify-between mb-6">
+                <div>
+                    <p class="font-sans text-[10px] font-semibold tracking-[.3em] uppercase
+                               text-secondary/40 mb-1">
+                        Programa de Recompensas
+                    </p>
+                    <h2 class="font-serif text-2xl font-bold text-primary">
                         Paniimi Rewards
-                    </h1>
-                    <img src="{% static 'img/oso_abrazando_galleta.webp' %}" alt=""
-                         class="hidden md:block w-20 h-20 object-contain opacity-70">
+                    </h2>
                 </div>
+                <span class="font-sans text-xs text-secondary/40 tracking-wide">
+                    {{ puntos_lealtad }}/6 pts
+                </span>
             </div>
 
-            <!-- Tarjeta de progreso -->
-            <div class="bg-surface border border-neutral/80 p-8 mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <!-- Tarjeta principal — mismos tokens que las stats del dashboard -->
+            <div class="bg-surface border border-neutral/80 p-6 mb-4">
+
+                <!-- Fila superior: título + osito sutil -->
+                <div class="flex items-start justify-between mb-4">
                     <div>
-                        <h2 class="font-serif italic text-3xl text-primary mb-4 leading-tight">
+                        <p class="font-sans text-[10px] font-semibold tracking-[.3em]
+                                  uppercase text-secondary/40 mb-2">
                             Tu Colección de Dulzura
-                        </h2>
-                        <p class="font-sans text-sm text-secondary/70 leading-relaxed mb-6">
-                            Por cada 6 galletas adquiridas, la séptima es un regalo de nuestro laboratorio.
-                            Acumula puntos con cada compra.
                         </p>
-                        <!-- Stamps de progreso -->
-                        <div class="flex gap-3 flex-wrap">
-                            {% for i in "123456" %}
-                            <div class="stamp {% if forloop.counter <= puntos_lealtad %}filled{% endif %}">
-                                {% if forloop.counter <= puntos_lealtad %}
-                                <span class="text-white text-lg">🍪</span>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <p class="font-sans text-xs text-secondary/40 mt-4 tracking-wide">
-                            {{ puntos_lealtad }}/6 galletas acumuladas
+                        <p class="font-sans text-sm text-secondary/60 leading-relaxed max-w-xs">
+                            Por cada 6 galletas, la séptima es regalo.
+                            Acumula con cada compra.
                         </p>
                     </div>
-                    <!-- Imagen -->
-                    <div class="relative">
-                        <div class="overflow-hidden aspect-square max-w-[220px] mx-auto">
-                            <img src="{% static 'img/oso_acostado.webp' %}" alt=""
-                                 class="w-full h-full object-cover"
-                                 style="mix-blend-mode:multiply; filter:grayscale(30%)">
-                        </div>
-                        <div class="absolute bottom-0 right-0 bg-primary text-white px-4 py-3 max-w-[160px]">
-                            <p class="font-serif italic text-sm leading-snug">
-                                "Faltan {{ 6|add:"-"|add:puntos_lealtad }} para el premio"
-                            </p>
-                        </div>
-                    </div>
+                    <!-- Ilustración sutil — tamaño pequeño, coherente con las otras tarjetas -->
+                    <img src="{% static 'img/oso_abrazando_galleta.webp' %}" alt=""
+                         class="hidden sm:block w-10 h-10 object-contain opacity-40 flex-shrink-0 ml-4">
                 </div>
+
+                <!-- Stamps compactos (32 × 32px, borde fino) -->
+                <div class="flex gap-2 flex-wrap mt-5">
+                    {% for i in "123456" %}
+                    <div class="w-8 h-8 border border-primary flex items-center justify-center
+                                transition-colors duration-200
+                                {% if forloop.counter <= puntos_lealtad %}bg-primary{% endif %}">
+                        {% if forloop.counter <= puntos_lealtad %}
+                        <span class="text-white text-xs leading-none">✓</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Progreso y nota -->
+                <div class="mt-5 h-px bg-neutral w-full relative">
+                    <div class="absolute top-0 left-0 h-px bg-primary transition-all duration-500"
+                         style="width: {% widthratio puntos_lealtad 6 100 %}%"></div>
+                </div>
+                <p class="font-sans text-[10px] text-secondary/30 mt-2 tracking-wide">
+                    {% if puntos_lealtad >= 6 %}
+                        ¡Galleta gratis desbloqueada! Contáctanos para reclamarla.
+                    {% else %}
+                        Faltan {{ 6|add:"-"|add:puntos_lealtad }} galletas para tu próximo premio
+                    {% endif %}
+                </p>
             </div>
 
-            <!-- Cupones -->
-            <h2 class="font-serif italic text-2xl text-primary mb-5">Tus Cupones</h2>
-            <div class="bg-surface border border-neutral/80 py-12 text-center">
-                <p class="font-serif italic text-xl text-secondary/40 mb-2">"Sin cupones disponibles."</p>
-                <p class="font-sans text-xs text-secondary/30">
-                    Completa tu colección para desbloquear recompensas exclusivas.
+            <!-- Tarjeta: Cupones — misma altura y padding que la anterior -->
+            <div class="bg-surface border border-neutral/80 p-6">
+                <p class="font-sans text-[10px] font-semibold tracking-[.3em]
+                          uppercase text-secondary/40 mb-4">
+                    Tus Cupones
                 </p>
+                <div class="py-6 text-center">
+                    <p class="font-serif italic text-base text-secondary/40 mb-1">
+                        "Sin cupones disponibles."
+                    </p>
+                    <p class="font-sans text-xs text-secondary/30">
+                        Completa tu colección para desbloquear recompensas.
+                    </p>
+                </div>
             </div>
         </div>
 
