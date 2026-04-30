@@ -282,68 +282,73 @@
                 </span>
             </div>
 
-            <!-- Tarjeta principal — mismos tokens que las stats del dashboard -->
-            <div class="bg-surface border border-neutral/80 p-6 mb-4">
+            <!-- Grid idéntico al de las stats del dashboard:
+                 sm:col-span-2 → Colección (= Información de Perfil)
+                 sm:col-span-1 → Cupones   (= Paniimi Rewards)        -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-                <!-- Fila superior: título + osito sutil -->
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <p class="font-sans text-[10px] font-semibold tracking-[.3em]
-                                  uppercase text-secondary/40 mb-2">
-                            Tu Colección de Dulzura
-                        </p>
-                        <p class="font-sans text-sm text-secondary/60 leading-relaxed max-w-xs">
-                            Por cada 6 galletas, la séptima es regalo.
-                            Acumula con cada compra.
-                        </p>
+                <!-- Tarjeta: Colección de Dulzura (ancho ×2) -->
+                <div class="bg-surface border border-neutral/80 p-6 sm:col-span-2">
+
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <p class="font-sans text-[10px] font-semibold tracking-[.3em]
+                                      uppercase text-secondary/40 mb-2">
+                                Tu Colección de Dulzura
+                            </p>
+                            <p class="font-sans text-sm text-secondary/60 leading-relaxed max-w-xs">
+                                Por cada 6 galletas, la séptima es regalo.
+                                Acumula con cada compra.
+                            </p>
+                        </div>
+                        <img src="{% static 'img/oso_abrazando_galleta.webp' %}" alt=""
+                             class="hidden sm:block w-10 h-10 object-contain opacity-40 flex-shrink-0 ml-4">
                     </div>
-                    <!-- Ilustración sutil — tamaño pequeño, coherente con las otras tarjetas -->
-                    <img src="{% static 'img/oso_abrazando_galleta.webp' %}" alt=""
-                         class="hidden sm:block w-10 h-10 object-contain opacity-40 flex-shrink-0 ml-4">
-                </div>
 
-                <!-- Stamps compactos (32 × 32px, borde fino) -->
-                <div class="flex gap-2 flex-wrap mt-5">
-                    {% for i in "123456" %}
-                    <div class="w-8 h-8 border border-primary flex items-center justify-center
-                                transition-colors duration-200
-                                {% if forloop.counter <= puntos_lealtad %}bg-primary{% endif %}">
-                        {% if forloop.counter <= puntos_lealtad %}
-                        <span class="text-white text-xs leading-none">✓</span>
+                    <!-- Stamps compactos 32×32px -->
+                    <div class="flex gap-2 flex-wrap mt-5">
+                        {% for i in "123456" %}
+                        <div class="w-8 h-8 border border-primary flex items-center justify-center
+                                    transition-colors duration-200
+                                    {% if forloop.counter <= puntos_lealtad %}bg-primary{% endif %}">
+                            {% if forloop.counter <= puntos_lealtad %}
+                            <span class="text-white text-xs leading-none">✓</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Barra de progreso -->
+                    <div class="mt-5 h-px bg-neutral w-full relative">
+                        <div class="absolute top-0 left-0 h-px bg-primary transition-all duration-500"
+                             style="width: {% widthratio puntos_lealtad 6 100 %}%"></div>
+                    </div>
+                    <p class="font-sans text-[10px] text-secondary/30 mt-2 tracking-wide">
+                        {% if puntos_lealtad >= 6 %}
+                            ¡Galleta gratis desbloqueada! Contáctanos para reclamarla.
+                        {% else %}
+                            Faltan {{ 6|add:"-"|add:puntos_lealtad }} galletas para tu próximo premio
                         {% endif %}
+                    </p>
+                </div>
+
+                <!-- Tarjeta: Cupones (ancho ×1) -->
+                <div class="bg-surface border border-neutral/80 p-6 sm:col-span-1">
+                    <p class="font-sans text-[10px] font-semibold tracking-[.3em]
+                              uppercase text-secondary/40 mb-4">
+                        Tus Cupones
+                    </p>
+                    <div class="py-6 text-center">
+                        <p class="font-serif italic text-base text-secondary/40 mb-1">
+                            "Sin cupones disponibles."
+                        </p>
+                        <p class="font-sans text-xs text-secondary/30">
+                            Completa tu colección para desbloquear recompensas.
+                        </p>
                     </div>
-                    {% endfor %}
                 </div>
 
-                <!-- Progreso y nota -->
-                <div class="mt-5 h-px bg-neutral w-full relative">
-                    <div class="absolute top-0 left-0 h-px bg-primary transition-all duration-500"
-                         style="width: {% widthratio puntos_lealtad 6 100 %}%"></div>
-                </div>
-                <p class="font-sans text-[10px] text-secondary/30 mt-2 tracking-wide">
-                    {% if puntos_lealtad >= 6 %}
-                        ¡Galleta gratis desbloqueada! Contáctanos para reclamarla.
-                    {% else %}
-                        Faltan {{ 6|add:"-"|add:puntos_lealtad }} galletas para tu próximo premio
-                    {% endif %}
-                </p>
-            </div>
-
-            <!-- Tarjeta: Cupones — misma altura y padding que la anterior -->
-            <div class="bg-surface border border-neutral/80 p-6">
-                <p class="font-sans text-[10px] font-semibold tracking-[.3em]
-                          uppercase text-secondary/40 mb-4">
-                    Tus Cupones
-                </p>
-                <div class="py-6 text-center">
-                    <p class="font-serif italic text-base text-secondary/40 mb-1">
-                        "Sin cupones disponibles."
-                    </p>
-                    <p class="font-sans text-xs text-secondary/30">
-                        Completa tu colección para desbloquear recompensas.
-                    </p>
-                </div>
-            </div>
+            </div><!-- /grid tarjetas lealtad -->
         </div>
 
 
