@@ -127,12 +127,28 @@
 
                 <!-- Descripción breve -->
                 {% if producto.descripcion %}
-                <p class="font-sans text-xs text-secondary/70 leading-relaxed line-clamp-2">
+                <p class="font-sans text-xs text-secondary/70 leading-relaxed line-clamp-2 mb-3">
                     {{ producto.descripcion }}
                 </p>
+                {% else %}
+                <div class="mb-3"></div>
                 {% endif %}
 
+                <!-- Añadir al carrito -->
+                <form method="POST" action="{% url 'agregar_al_carrito' producto.id %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full font-sans text-[10px] font-semibold tracking-[.25em]
+                                   uppercase border border-primary text-primary
+                                   py-2.5 opacity-0 group-hover:opacity-100
+                                   hover:bg-primary hover:text-white
+                                   transition-all duration-300">
+                        Añadir al carrito
+                    </button>
+                </form>
+
             </article>
+
 
             {% endfor %}
         </div>

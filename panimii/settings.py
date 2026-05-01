@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'panimii.context_processors.carrito_count',
             ],
         },
     },
@@ -131,10 +132,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ── Autenticación ────────────────────────────────────────────────────────────
-LOGIN_URL          = '/auth/login/'
-LOGIN_REDIRECT_URL = '/'       # Redirige al home tras login exitoso
-LOGOUT_REDIRECT_URL = '/'      # Redirige al home tras logout
+LOGIN_URL           = '/auth/login/'
+LOGIN_REDIRECT_URL  = '/'
+LOGOUT_REDIRECT_URL = '/'
 
+# ── Stripe ───────────────────────────────────────────────────────────────────
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 
 
 # ════════════════════════════════════════════════════════════════════════

@@ -17,6 +17,11 @@ urlpatterns = [
     path('contacto/', project_views.contacto, name='contacto'),
     path('mi-cuenta/', project_views.dashboard, name='dashboard'),
 
+    # ── Carrito ──────────────────────────────────────────────────────────
+    path('carrito/', project_views.ver_carrito, name='ver_carrito'),
+    path('carrito/agregar/<int:producto_id>/', project_views.agregar_al_carrito, name='agregar_al_carrito'),
+    path('carrito/actualizar/<int:producto_id>/', project_views.actualizar_carrito, name='actualizar_carrito'),
+
 
     # ── Autenticación ────────────────────────────────────────────
     path('auth/login/', auth_views.LoginView.as_view(

@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Carrito — Panimii Bakery{% endblock %}
+{% block meta_description %}Revisa tu selección de galletas artesanales antes de confirmar tu pedido.{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Botones de cantidad — cuadrados minimalistas */
+    .qty-btn {
+        width: 32px; height: 32px;
+        border: 1px solid #000;
+        background: transparent;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Inter', sans-serif;
+        font-size: 16px; font-weight: 500;
+        cursor: pointer;
+        transition: background .15s, color .15s;
+    }
+    .qty-btn:hover { background: #000; color: #fff; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CABECERA
+     ═══════════════════════════════════════════════════════════ -->
+<section class="bg-surface pt-16 pb-10">
+    <div class="max-w-7xl mx-auto px-container">
+        <span class="font-sans text-xs font-semibold tracking-[0.3em] uppercase text-secondary/50 mb-3 block">
+            Tu selección
+        </span>
+        <h1 class="font-serif text-5xl lg:text-6xl font-bold text-primary leading-tight">
+            Carrito <span class="italic font-normal">de Compras</span>
+        </h1>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CUERPO PRINCIPAL
+     ═══════════════════════════════════════════════════════════ -->
+<section class="bg-neutral py-section">
+    <div class="max-w-7xl mx-auto px-container">
+
+        {% if items %}
+        <!-- Layout 2 columnas: productos | resumen -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+            <!-- ══ COLUMNA IZQUIERDA: Lista de productos ══════════════ -->
+            <div class="lg:col-span-8">
+
+                <!-- Encabezados de tabla -->
+                <div class="hidden md:grid grid-cols-12 gap-4 px-0 pb-3 border-b border-neutral/80">
+                    <span class="col-span-6 font-sans text-[10px] font-semibold tracking-[.3em]
+                                 uppercase text-secondary/40">Producto</span>
+                    <span class="col-span-2 font-sans text-[10px] font-semibold tracking-[.3em]
+                                 uppercase text-secondary/40 text-center">Precio</span>
+                    <span class="col-span-2 font-sans text-[10px] font-semibold tracking-[.3em]
+                                 uppercase text-secondary/40 text-center">Cantidad</span>
+                    <span class="col-span-2 font-sans text-[10px] font-semibold tracking-[.3em]
+                                 uppercase text-secondary/40 text-right">Subtotal</span>
+                </div>
+
+                <!-- Filas de productos -->
+                <div class="divide-y divide-neutral/80">
+                    {% for item in items %}
+                    <div class="grid grid-cols-12 gap-4 py-6 items-center">
+
+                        <!-- Imagen + Nombre -->
+                        <div class="col-span-12 md:col-span-6 flex items-center gap-4">
+                            {% if item.imagen %}
+                            <img src="{{ item.imagen }}" alt="{{ item.nombre }}"
+                                 class="w-16 h-16 object-cover flex-shrink-0">
+                            {% else %}
+                            <div class="w-16 h-16 bg-neutral flex items-center justify-center flex-shrink-0">
+                                <img src="{% static 'img/oso_comiendo_galleta.webp' %}" alt=""
+                                     class="w-10 h-10 object-contain opacity-30">
+                            </div>
+                            {% endif %}
+                            <div>
+                                <p class="font-serif text-base font-bold text-primary leading-tight">
+                                    {{ item.nombre }}
+                                </p>
+                                <!-- Eliminar (móvil) -->
+                                <form method="POST" action="{% url 'actualizar_carrito' item.id %}"
+                                      class="md:hidden mt-1">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="accion" value="eliminar">
+                                    <button type="submit"
+                                            class="font-sans text-[10px] tracking-wide uppercase
+                                                   text-secondary/40 hover:text-primary transition-colors">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Precio unitario -->
+                        <div class="hidden md:flex col-span-2 justify-center">
+                            <span class="font-sans text-sm text-secondary">${{ item.precio }}</span>
+                        </div>
+
+                        <!-- Controles de cantidad -->
+                        <div class="col-span-8 md:col-span-2 flex items-center justify-start md:justify-center gap-0">
+                            <form method="POST" action="{% url 'actualizar_carrito' item.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="accion" value="menos">
+                                <button type="submit" class="qty-btn">−</button>
+                            </form>
+                            <span class="font-sans text-sm font-semibold text-primary
+                                         w-10 text-center tabular-nums">
+                                {{ item.cantidad }}
+                            </span>
+                            <form method="POST" action="{% url 'actualizar_carrito' item.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="accion" value="mas">
+                                <button type="submit" class="qty-btn">+</button>
+                            </form>
+                        </div>
+
+                        <!-- Subtotal -->
+                        <div class="col-span-2 md:col-span-2 flex items-center justify-end gap-4">
+                            <span class="font-sans text-sm font-semibold text-primary">
+                                ${{ item.subtotal }}
+                            </span>
+                            <!-- Eliminar (desktop) -->
+                            <form method="POST" action="{% url 'actualizar_carrito' item.id %}"
+                                  class="hidden md:block">
+                                {% csrf_token %}
+                                <input type="hidden" name="accion" value="eliminar">
+                                <button type="submit"
+                                        class="font-sans text-secondary/30 hover:text-primary
+                                               text-lg leading-none transition-colors duration-200"
+                                        title="Eliminar">
+                                    ×
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Volver al catálogo -->
+                <div class="pt-6">
+                    <a href="{% url 'catalogo:lista' %}"
+                       class="font-sans text-xs text-secondary/40 hover:text-primary
+                              tracking-wide transition-colors duration-200">
+                        ← Seguir comprando
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- ══ COLUMNA DERECHA: Resumen del pedido ════════════════ -->
+            <div class="lg:col-span-4">
+                <div class="bg-surface border border-neutral/80 p-6 sticky top-24">
+
+                    <h2 class="font-sans text-[10px] font-semibold tracking-[.3em]
+                               uppercase text-secondary/40 mb-6">
+                        Resumen del Pedido
+                    </h2>
+
+                    <!-- Líneas de resumen -->
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between">
+                            <span class="font-sans text-sm text-secondary">
+                                Subtotal ({{ items|length }} {% if items|length == 1 %}producto{% else %}productos{% endif %})
+                            </span>
+                            <span class="font-sans text-sm font-semibold text-primary">
+                                ${{ total }}
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-sans text-sm text-secondary">Envío</span>
+                            <span class="font-sans text-xs text-secondary/50 italic">Por confirmar</span>
+                        </div>
+                    </div>
+
+                    <!-- Divisor -->
+                    <div class="h-px bg-neutral mb-5"></div>
+
+                    <!-- Total -->
+                    <div class="flex justify-between items-baseline mb-8">
+                        <span class="font-sans text-xs font-semibold tracking-[.2em] uppercase text-secondary/50">
+                            Total
+                        </span>
+                        <span class="font-serif text-3xl font-bold text-primary">
+                            ${{ total }}
+                        </span>
+                    </div>
+
+                    <!-- Botón de pago -->
+                    <button id="btn-checkout"
+                            class="w-full bg-primary text-white font-sans text-xs font-semibold
+                                   tracking-[.25em] uppercase py-4
+                                   hover:opacity-80 active:opacity-100
+                                   transition-opacity duration-200">
+                        Proceder al Pago Seguro
+                    </button>
+
+                    <!-- Nota de seguridad -->
+                    <p class="font-sans text-[10px] text-secondary/30 mt-3 text-center tracking-wide">
+                        Pago procesado de forma segura por Stripe
+                    </p>
+
+                </div>
+            </div>
+
+        </div><!-- /grid -->
+
+
+        {% else %}
+        <!-- ══ EMPTY STATE ═══════════════════════════════════════════ -->
+        <div class="bg-surface border border-neutral/80 py-24 px-8 text-center max-w-lg mx-auto">
+            <img src="{% static 'img/oso_envio.webp' %}" alt=""
+                 class="w-28 h-28 object-contain mx-auto mb-6 opacity-40">
+            <p class="font-serif italic text-2xl text-primary/60 mb-2">
+                "Tu carrito está vacío."
+            </p>
+            <p class="font-sans text-sm text-secondary/50 mb-8 leading-relaxed">
+                Explora nuestro catálogo y añade tus galletas favoritas.
+            </p>
+            <a href="{% url 'catalogo:lista' %}"
+               class="inline-block bg-primary text-white font-sans text-xs font-semibold
+                      tracking-[.25em] uppercase px-10 py-3
+                      hover:opacity-80 transition-opacity duration-200">
+                Volver al Catálogo
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- Stripe JS — solo se carga si hay items y hay public key -->
+{% if items and stripe_public_key %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('{{ stripe_public_key }}');
+    document.getElementById('btn-checkout').addEventListener('click', function () {
+        // TODO Fase 3: crear checkout session en el servidor y redirigir
+        alert('Integración de pago lista. Configura tu Stripe Session en el servidor.');
+    });
+</script>
+{% endif %}
+
+{% endblock %}

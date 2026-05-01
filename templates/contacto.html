@@ -2,27 +2,37 @@
 {% load static %}
 
 {% block title %}Contacto y Envíos — Panimii Bakery{% endblock %}
-{% block meta_description %}Contáctanos para pedidos especiales, información de envíos y cobertura en Mérida y el interior de Yucatán.{% endblock %}
+{% block meta_description %}Contáctanos para pedidos especiales, información de envíos y cobertura en Mérida y el
+interior de Yucatán.{% endblock %}
 
 {% block extra_head %}
 <style>
     /* ── Inputs editoriales — focus con contorno negro ── */
     .input-editorial {
-        @apply w-full bg-surface border border-neutral
-               font-sans text-sm text-primary placeholder-secondary/40
-               px-4 py-3 outline-none
-               transition-colors duration-200
-               focus:border-primary;
-        border-radius: 0;          /* rounded-editorial-none: 0px */
+        @apply w-full bg-surface border border-neutral font-sans text-sm text-primary placeholder-secondary/40 px-4 py-3 outline-none transition-colors duration-200 focus:border-primary;
+        border-radius: 0;
+        /* rounded-editorial-none: 0px */
     }
+
     .input-editorial:focus {
         box-shadow: none;
     }
+
     /* Auto-dismiss del flash después de 4s */
     @keyframes fadeOut {
-        0%   { opacity: 1; transform: translateY(0); }
-        80%  { opacity: 1; }
-        100% { opacity: 0; transform: translateY(-8px); }
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
     }
 </style>
 {% endblock %}
@@ -70,18 +80,12 @@
                     <!-- Campo: Nombre -->
                     <div>
                         <label for="{{ form.nombre.id_for_label }}"
-                               class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                            class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
                             Nombre completo
                         </label>
-                        <input
-                            type="text"
-                            name="{{ form.nombre.html_name }}"
-                            id="{{ form.nombre.id_for_label }}"
-                            value="{{ form.nombre.value|default:'' }}"
-                            placeholder="Tu nombre"
-                            autocomplete="name"
-                            class="input-editorial {% if form.nombre.errors %}border-red-500{% endif %}"
-                        >
+                        <input type="text" name="{{ form.nombre.html_name }}" id="{{ form.nombre.id_for_label }}"
+                            value="{{ form.nombre.value|default:'' }}" placeholder="Tu nombre" autocomplete="name"
+                            class="input-editorial {% if form.nombre.errors %}border-red-500{% endif %}">
                         {% if form.nombre.errors %}
                         <p class="font-sans text-xs text-red-500 mt-1">{{ form.nombre.errors|join:', ' }}</p>
                         {% endif %}
@@ -90,18 +94,13 @@
                     <!-- Campo: Email -->
                     <div>
                         <label for="{{ form.email.id_for_label }}"
-                               class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                            class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
                             Correo electrónico
                         </label>
-                        <input
-                            type="email"
-                            name="{{ form.email.html_name }}"
-                            id="{{ form.email.id_for_label }}"
-                            value="{{ form.email.value|default:'' }}"
-                            placeholder="correo@ejemplo.com"
+                        <input type="email" name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}"
+                            value="{{ form.email.value|default:'' }}" placeholder="correo@ejemplo.com"
                             autocomplete="email"
-                            class="input-editorial {% if form.email.errors %}border-red-500{% endif %}"
-                        >
+                            class="input-editorial {% if form.email.errors %}border-red-500{% endif %}">
                         {% if form.email.errors %}
                         <p class="font-sans text-xs text-red-500 mt-1">{{ form.email.errors|join:', ' }}</p>
                         {% endif %}
@@ -110,16 +109,12 @@
                     <!-- Campo: Mensaje -->
                     <div>
                         <label for="{{ form.mensaje.id_for_label }}"
-                               class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
+                            class="font-sans text-xs font-semibold tracking-[0.2em] uppercase text-secondary/60 mb-2 block">
                             Mensaje o pedido especial
                         </label>
-                        <textarea
-                            name="{{ form.mensaje.html_name }}"
-                            id="{{ form.mensaje.id_for_label }}"
-                            rows="6"
+                        <textarea name="{{ form.mensaje.html_name }}" id="{{ form.mensaje.id_for_label }}" rows="6"
                             placeholder="¿Qué tienes en mente? Cuéntanos tu pedido, sabor favorito, fecha de entrega..."
-                            class="input-editorial resize-none {% if form.mensaje.errors %}border-red-500{% endif %}"
-                        >{{ form.mensaje.value|default:'' }}</textarea>
+                            class="input-editorial resize-none {% if form.mensaje.errors %}border-red-500{% endif %}">{{ form.mensaje.value|default:'' }}</textarea>
                         {% if form.mensaje.errors %}
                         <p class="font-sans text-xs text-red-500 mt-1">{{ form.mensaje.errors|join:', ' }}</p>
                         {% endif %}
@@ -186,8 +181,8 @@
                     </h3>
                     <div class="space-y-2 font-sans text-sm text-secondary leading-relaxed">
                         <p><span class="font-semibold text-primary">Pedidos locales:</span> 24 – 48 horas.</p>
-                        <p><span class="font-semibold text-primary">Pedidos foráneos:</span> 72 horas mínimo.</p>
-                        <p><span class="font-semibold text-primary">Pedidos especiales</span> (fondants, decorados): 5 días hábiles.</p>
+                        <p><span class="font-semibold text-primary">Pedidos especiales</span> (fondants, decorados): 5
+                            días hábiles.</p>
                     </div>
                 </div>
 
@@ -199,17 +194,19 @@
                     <div class="space-y-2 font-sans text-sm text-secondary">
                         <p>
                             <span class="font-semibold text-primary block">Instagram</span>
-                            <a href="#" class="hover:text-primary transition-colors duration-200">@paniimi.bakery</a>
+                            <a href="https://www.instagram.com/paniimi_bakery/"
+                                class="hover:text-primary transition-colors duration-200">@paniimi.bakery</a>
                         </p>
                         <p>
                             <span class="font-semibold text-primary block">WhatsApp</span>
                             <a href="https://wa.me/529991234567" target="_blank" rel="noopener"
-                               class="hover:text-primary transition-colors duration-200">+52 999 123 4567</a>
+                                class="hover:text-primary transition-colors duration-200">+52 999 123
+                                4567(PROXIMAMENTE)</a>
                         </p>
                         <p>
                             <span class="font-semibold text-primary block">Correo</span>
                             <a href="mailto:contacto@paniimi.com"
-                               class="hover:text-primary transition-colors duration-200">contacto@paniimi.com</a>
+                                class="hover:text-primary transition-colors duration-200">contacto@paniimi.com(PROXIMAMENTE)</a>
                         </p>
                     </div>
                 </div>
@@ -223,9 +220,7 @@
 
                         <li class="flex items-baseline justify-between">
                             <span class="text-secondary/50 text-xs tracking-wide uppercase">Instagram</span>
-                            <a href="https://instagram.com/paniimi.bakery"
-                               target="_blank" rel="noopener"
-                               class="text-primary font-medium
+                            <a href="https://instagram.com/paniimi.bakery" target="_blank" rel="noopener" class="text-primary font-medium
                                       border-b border-transparent
                                       hover:border-primary
                                       transition-all duration-200">
@@ -234,26 +229,12 @@
                         </li>
 
                         <li class="flex items-baseline justify-between">
-                            <span class="text-secondary/50 text-xs tracking-wide uppercase">Facebook</span>
-                            <a href="https://facebook.com/paniimibakery"
-                               target="_blank" rel="noopener"
-                               class="text-primary font-medium
+                            <span class="text-secondary/50 text-xs tracking-wide uppercase">TikTok(PROXIMAMENTE)</span>
+                            <a href="https://tiktok.com/@paniimi.bakery" target="_blank" rel="noopener" class="text-primary font-medium
                                       border-b border-transparent
                                       hover:border-primary
                                       transition-all duration-200">
-                                Paniimi Bakery
-                            </a>
-                        </li>
-
-                        <li class="flex items-baseline justify-between">
-                            <span class="text-secondary/50 text-xs tracking-wide uppercase">TikTok</span>
-                            <a href="https://tiktok.com/@paniimi.bakery"
-                               target="_blank" rel="noopener"
-                               class="text-primary font-medium
-                                      border-b border-transparent
-                                      hover:border-primary
-                                      transition-all duration-200">
-                                @paniimi.bakery
+                                @paniimi.bakery(PROXIMAMENTE)
                             </a>
                         </li>
 

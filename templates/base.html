@@ -170,14 +170,15 @@
                         </form>
                     </li>
                     <li>
-                        <a href="#"
+                        <a href="{% url 'ver_carrito' %}"
                            class="flex items-center gap-1 py-4 md:py-0
                                   font-sans text-xs font-semibold tracking-widest uppercase
                                   border border-neutral px-3 py-1.5
                                   hover:border-primary transition-colors duration-200">
-                            Carrito&nbsp;<span class="text-secondary/50">(0)</span>
+                            Carrito&nbsp;<span class="text-secondary/50">({{ carrito_count }})</span>
                         </a>
                     </li>
+
                 {% else %}
                     <!-- Usuario no autenticado: Iniciar Sesión -->
                     <li>
