@@ -23,9 +23,9 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+#ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1', '*').split(',')
 
-
+ALLOWED_HOSTS = ['*']
 # ════════════════════════════════════════════════════════════════════════
 # APLICACIONES
 # ════════════════════════════════════════════════════════════════════════
@@ -160,3 +160,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Dirección interna que recibe los mensajes del formulario de contacto
 EMAIL_DESTINATARIO = os.getenv('EMAIL_DESTINATARIO', EMAIL_HOST_USER)
+
+
+
+# ════════════════════════════════════════════════════════════════════════
+# ENTORNO TEMPORAL (trycloudflare)
+# ════════════════════════════════════════════════════════════════════════
+CSRF_TRUSTED_ORIGINS = ['https://*.trycloudflare.com']
